@@ -219,8 +219,6 @@ sub load_cdf {
 	   is_match =>  $attrs[UNIT_CBASE] eq $attrs[UNIT_PBASE] ? 1 : 0,
       );
 
-print STDERR $featureparams{x} . "         " . $featureparams{y} . "\n" if $mode eq 'Unit943_Block1';
-
       if($self->heavy){
 		$featureparams{probe}		= 	$attrs[UNIT_PROBE];
 		$featureparams{feat}		= 	$attrs[UNIT_FEAT];

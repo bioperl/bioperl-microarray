@@ -42,8 +42,8 @@ use Bio::Expression::MicroarrayIO;
 ok 5;
 
 my $affx = Bio::Expression::MicroarrayIO->new(
-						-file     => './eg/95av2.CEL',
-						-template => './eg/95av2.CDF',
+						-file     => './eg/95av2.cel',
+						-template => './eg/95av2.cdf',
 						-format   => 'affymetrix',
 					   );
 ok 6;
