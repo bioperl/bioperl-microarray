@@ -8,8 +8,7 @@
 
 =head1 NAME
 
-Bio::Expression::Microarray::ProbeI - an interface class for microarray
-probes, derived from Bio::Expression::ProbeI
+Bio::Expression::Microarray::Affymetrix::Probe - an Affymetrix probe.
 
 =head1 SYNOPSIS
 
@@ -47,17 +46,16 @@ methods. Internal methods are usually preceded with a _
 =cut
 
 # Let the code begin...
-package Bio::Expression::Microarray::ProbeI;
+package Bio::Expression::Microarray::Affymetrix::Probe;
 
 use strict;
-use base qw(Bio::Expression::ProbeI Bio::Root::Root);
+use base qw(Bio::Expression::Microarray::ProbeI Bio::Root::Root);
 use vars qw($DEBUG);
 
 use Class::MakeMethods::Template::Flyweight
-  scalar => [qw(x y probe feat name expos pos cbase pbase tbase
+  scalar => [qw(
+				probe feat expos pos cbase pbase tbase
 				atom index codon_index codon regiontype region
-				length value value_units standard_deviation
-				samples is_match is_masked is_outlier is_modified
 			   )
 			],
   new => 'new',
@@ -66,9 +64,9 @@ use Class::MakeMethods::Template::Flyweight
 =head2 new
 
  Title   : new
- Usage   : $probe = Bio::Expression::Microarray::Probe->new();
+ Usage   : $probe = Bio::Expression::Microarray::Affymetrix::Probe->new();
  Function: create a new probe object
- Returns : a Bio::Expression::Microarray::Probe object
+ Returns : a Bio::Expression::Microarray::Affymetrix::Probe object
  Args    : none.  all attributes must be set by calling the
            appropriate method
 =cut
@@ -90,42 +88,19 @@ purpose, are available:
 
  Method                   Purpose
  ------                   -------
- x                        the x-axis component of the probe's coordinate
-                          position on the array.
-
- y                        the y-axis component of the probe's coordinate
-                          position on the array.
- probe                    
- feat                     
- name                     
- expos                    
- pos                      
- cbase                    
- pbase                    
- tbase                    
- atom                     
- index                    
- codon_index              
- codon                    
- regiontype               
- region                   
-
- is_match                 1 if the probe is a reverse-compliment of the
-                          sequence it is measuring, 0 or undef if it is not
-                          a reverse compliment
-
- is_masked                1 if the probe has been masked out, i.e. should
-                          be excluded from further data analysis, undef or
-                          0 if the probe should be used
-
- is_outlier               1 if the probe's value is dissimilar to the other
-                          probes in the same probeset.  0 or undef if the
-                          value is similar to the other probes.
-
- is_modified              1 if the probe's value has been modified after
-                          quantitation.  0 or undef if the value has not
-                          been modified after quantitation.
-
+ probe                    ???
+ feat                     ???
+ expos                    ???
+ pos                      ???
+ cbase                    ???
+ pbase                    ???
+ tbase                    ???
+ atom                     ???
+ index                    ???
+ codon_index              ???
+ codon                    ???
+ regiontype               ???
+ region                   ???
 
 =cut
 

@@ -54,10 +54,7 @@ use base qw(Bio::Expression::ProbeI Bio::Root::Root);
 use vars qw($DEBUG);
 
 use Class::MakeMethods::Template::Flyweight
-  scalar => [qw(x y probe feat name expos pos cbase pbase tbase
-				atom index codon_index codon regiontype region
-				length value value_units standard_deviation
-				samples is_match is_masked is_outlier is_modified
+  scalar => [qw(x y name is_match is_masked is_outlier is_modified
 			   )
 			],
   new => 'new',
@@ -95,20 +92,8 @@ purpose, are available:
 
  y                        the y-axis component of the probe's coordinate
                           position on the array.
- probe                    
- feat                     
- name                     
- expos                    
- pos                      
- cbase                    
- pbase                    
- tbase                    
- atom                     
- index                    
- codon_index              
- codon                    
- regiontype               
- region                   
+
+ name                     ???
 
  is_match                 1 if the probe is a reverse-compliment of the
                           sequence it is measuring, 0 or undef if it is not
