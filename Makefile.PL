@@ -66,8 +66,8 @@ use ExtUtils::MakeMaker ;
 
 $do_autoload_finesse = 0;
 $NAME     = 'Bio';
-$DISTNAME = "bioperl";
-$VERSION  = "1.1";
+$DISTNAME = "bioperl-microarray";
+$VERSION  = "0.1";
 
 $error = 0;
 print "\n";
@@ -106,7 +106,7 @@ WriteMakefile(
                    },
     ($] ge '5.005')  ? (
      'AUTHOR'   => 'Bioperl Team (bioperl-l@bioperl.org)',
-     'ABSTRACT' => 'Bioinformatics Toolkit',
+     'ABSTRACT' => 'Bioperl Toolkit - Addendum for microarray data',
     ) : (),
     'realclean' => {  FILES        => join(' ',@BACKUP_FILES) },
     DIR         => [  ], # directories with other Makefile.PL's in them
