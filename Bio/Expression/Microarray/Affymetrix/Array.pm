@@ -92,40 +92,40 @@ sub matrix {
   return $self->{matrix}->[ $args[1] ][ $args[0] ];
 }
 
-sub featureset {
+sub featuregroup {
   my($self,$arg) = @_;
-  return $self->{featureset}->{$arg} if $self->{featureset}->{$arg};
-  $self->{featureset}->{$arg} = Bio::Expression::FeatureSet->new()
+  return $self->{featuregroup}->{$arg} if $self->{featureset}->{$arg};
+  $self->{featuregroup}->{$arg} = Bio::Expression::FeatureSet->new()
 	or $self->throw("Couldn't create a Bio::Expression::FeatureSet: $!");
-  return $self->{featureset}->{$arg};
+  return $self->{featuregroup}->{$arg};
 }
 
-sub qcfeatureset {
+sub qcfeaturegroup {
   my($self,$arg) = @_;
-  return $self->{qcfeatureset}->{$arg} if $self->{qcfeatureset}->{$arg};
-  $self->{qcfeatureset}->{$arg} = Bio::Expression::FeatureSet->new()
+  return $self->{qcfeaturegroup}->{$arg} if $self->{qcfeatureset}->{$arg};
+  $self->{qcfeaturegroup}->{$arg} = Bio::Expression::FeatureSet->new()
 	or $self->throw("Couldn't create a Bio::Expression::FeatureSet: $!");
 
-  #tag it as being a QC featureset
-  $self->{qcfeatureset}->{$arg}->is_qc(1);
+  #tag it as being a QC featuregroup
+  $self->{qcfeaturegroup}->{$arg}->is_qc(1);
 
-  return $self->{qcfeatureset}->{$arg};
+  return $self->{qcfeaturegroup}->{$arg};
 }
 
-sub each_featureset {
+sub each_featuregroup {
   my $self = shift;
   my @return = ();
-  foreach my $p (sort keys %{$self->{featureset}}){
-	push @return, $self->{featureset}->{$p};
+  foreach my $p (sort keys %{$self->{featuregroup}}){
+	push @return, $self->{featuregroup}->{$p};
   }
   return @return;
 }
 
-sub each_qcfeatureset {
+sub each_qcfeaturegroup {
   my $self = shift;
   my @return = ();
-  foreach my $p (sort keys %{$self->{qcfeatureset}}){
-	push @return, $self->{qcfeatureset}->{$p};
+  foreach my $p (sort keys %{$self->{qcfeaturegroup}}){
+	push @return, $self->{qcfeaturegroup}->{$p};
   }
   return @return;
 }
@@ -154,12 +154,12 @@ sub load_data {
   elsif($self->mode =~ /^QC/){
 	return if /^CellHeader/;
 
-	my $featureset = $self->qcfeatureset($self->mode);
+	my $featuregroup = $self->qcfeatureset($self->mode);
 
 	my($type) = $_ =~ /Type=(.+)/;
 
-	$featureset->type($type) and return if $type;
-	$featureset->id($self->mode) if $self->mode;
+	$featuregroup->type($type) and return if $type;
+	$featuregroup->id($self->mode) if $self->mode;
 
 	my($feature,$attrs) = $_ =~ /Cell(\d+)=(.+)/;
 	return unless $attrs;
@@ -179,21 +179,21 @@ sub load_data {
 
 	my $feature = Bio::Expression::Microarray::Affymetrix::Feature->new( %featureparams );
 	$self->matrix($attrs[UNIT_X],$attrs[UNIT_Y],\$feature);
-	$featureset->add_feature($feature);
+	$featuregroup->add_feature($feature);
   }
   elsif($self->mode =~ /^Unit(\d+)_Block/){
 	return if /^Block|Num|Start|Stop|CellHeader/;
 
-	my $featureset;
+	my $featuregroup;
 
 	my($name) = $_ =~ /^Name=(.+)/;
 	if($name){
-	  $featureset = $self->featureset($name);
-	  $featureset->id($name);
+	  $featuregroup = $self->featureset($name);
+	  $featuregroup->id($name);
 	  $self->_temp_name($name);
 	  return;
 	} else {
-	  $featureset = $self->featureset($self->_temp_name);
+	  $featuregroup = $self->featureset($self->_temp_name);
 	}
 
 	my($feature,$attrs) = $_ =~ /Cell(\d+)=(.+)/;
@@ -223,7 +223,7 @@ sub load_data {
 	}
 
 	my $feature = Bio::Expression::Microarray::Affymetrix::Feature->new( %featureparams );
-	$featureset->add_feature($feature);
+	$featuregroup->add_feature($feature);
 
 	$self->matrix($attrs[UNIT_X],$attrs[UNIT_Y],\$feature);
     }

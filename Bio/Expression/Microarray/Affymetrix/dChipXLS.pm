@@ -107,9 +107,9 @@ sub init {
   $DEBUG = 1 if( ! defined $DEBUG && $self->verbose > 0);
 }
 
-=head2 featureset
+=head2 featuregroup
 
- Title   : featureset
+ Title   : featuregroup
  Usage   :
  Function:
  Example :
@@ -119,17 +119,17 @@ sub init {
 
 =cut
 
-sub featureset {
+sub featuregroup {
   my($self,$arg) = @_;
-  return $self->{featureset}->{$arg} if $self->{featureset}->{$arg};
-  $self->{featureset}->{$arg} = Bio::Expression::FeatureSet->new()
+  return $self->{featuregroup}->{$arg} if $self->{featureset}->{$arg};
+  $self->{featuregroup}->{$arg} = Bio::Expression::FeatureSet->new()
 	or $self->throw("Couldn't create a Bio::Expression::FeatureSet: $!");
-  return $self->{featureset}->{$arg};
+  return $self->{featuregroup}->{$arg};
 }
 
-=head2 each_featureset
+=head2 each_featuregroup
 
- Title   : each_featureset
+ Title   : each_featuregroup
  Usage   :
  Function:
  Example :
@@ -139,11 +139,11 @@ sub featureset {
 
 =cut
 
-sub each_featureset {
+sub each_featuregroup {
   my $self = shift;
   my @return = ();
-  foreach my $p (sort keys %{$self->{featureset}}){
-	push @return, $self->{featureset}->{$p};
+  foreach my $p (sort keys %{$self->{featuregroup}}){
+	push @return, $self->{featuregroup}->{$p};
   }
   return @return;
 }
@@ -173,11 +173,11 @@ sub load_data {
     return;
   }
 
-  my $featureset = $self->featureset($probe);
-  $featureset->id($probe);
-  $featureset->standard_deviation($sd);
-  $featureset->quantitation($value);
-  $featureset->presence($call);
+  my $featuregroup = $self->featureset($probe);
+  $featuregroup->id($probe);
+  $featuregroup->standard_deviation($sd);
+  $featuregroup->quantitation($value);
+  $featuregroup->presence($call);
 }
 
 1;

@@ -35,19 +35,19 @@ sub new {
   return bless {}, $class;
 }
 
-sub featureset {
+sub featuregroup {
   my($self,$arg) = @_;
-  return $self->{featureset}->{$arg} if $self->{featureset}->{$arg};
-  $self->{featureset}->{$arg} = Bio::Expression::FeatureSet::FeatureSetMas50->new()
+  return $self->{featuregroup}->{$arg} if $self->{featureset}->{$arg};
+  $self->{featuregroup}->{$arg} = Bio::Expression::FeatureSet::FeatureSetMas50->new()
 	or $self->throw("Couldn't create a Bio::Expression::FeatureSet::FeatureSetMas50 $!");
-  return $self->{featureset}->{$arg};
+  return $self->{featuregroup}->{$arg};
 }
 
-sub each_featureset {
+sub each_featuregroup {
   my $self = shift;
   my @return = ();
-  foreach my $p (sort keys %{$self->{featureset}}) {
-	push @return, $self->{featureset}->{$p};
+  foreach my $p (sort keys %{$self->{featuregroup}}) {
+	push @return, $self->{featuregroup}->{$p};
   }
   return @return;
 }
@@ -132,115 +132,115 @@ sub load_data {
 	} else {
 	  #max column number is 38 (so 0-37)
 	  if (defined(@entries[1])) {
-		my $featureset = $self->array->featureset(@entries[1]);
+		my $featuregroup = $self->array->featureset(@entries[1]);
 
 		if (defined(@entries[2])) {
-		  $featureset->probe_set_name(@entries[2]);
+		  $featuregroup->probe_set_name(@entries[2]);
 		}
 		if (defined(@entries[3])) {
-		  $featureset->stat_pairs(@entries[3]);
+		  $featuregroup->stat_pairs(@entries[3]);
 		}
 		if (defined(@entries[4])) {
-		  $featureset->stat_pairs_used(@entries[4]);
+		  $featuregroup->stat_pairs_used(@entries[4]);
 		}
 		if (defined(@entries[5])) {
-		  $featureset->signal(@entries[5]);
+		  $featuregroup->signal(@entries[5]);
 		}
 		if (defined(@entries[6])) {
-		  $featureset->detection(@entries[6]);
+		  $featuregroup->detection(@entries[6]);
 		}
 		if (defined(@entries[7])) {
-		  $featureset->detection_p-value(@entries[7]);
+		  $featuregroup->detection_p-value(@entries[7]);
 		}
 		if (defined(@entries[8])) {
-		  $featureset->stat_common_pairs(@entries[8]);
+		  $featuregroup->stat_common_pairs(@entries[8]);
 		}
 		if (defined(@entries[9])) {
-		  $featureset->signal_log_ratio(@entries[9]);
+		  $featuregroup->signal_log_ratio(@entries[9]);
 		}
 		if (defined(@entries[10])) {
-		  $featureset->signal_log_ratio_low(@entries[10]);
+		  $featuregroup->signal_log_ratio_low(@entries[10]);
 		}
 		if (defined(@entries[11])) {
-		  $featureset->signal_log_ratio_high(@entries[11]);
+		  $featuregroup->signal_log_ratio_high(@entries[11]);
 		}
 		if (defined(@entries[12])) {
-		  $featureset->change(@entries[12]);
+		  $featuregroup->change(@entries[12]);
 		}
 		if (defined(@entries[13])) {
-		  $featureset->change_p-value(@entries[13]);
+		  $featuregroup->change_p-value(@entries[13]);
 		}
 		if (defined(@entries[14])) {
-		  $featureset->positive(@entries[14]);
+		  $featuregroup->positive(@entries[14]);
 		}
 		if (defined(@entries[15])) {
-		  $featureset->negative(@entries[15]);
+		  $featuregroup->negative(@entries[15]);
 		}
 		if (defined(@entries[16])) {
-		  $featureset->pairs(@entries[16]);
+		  $featuregroup->pairs(@entries[16]);
 		}
 		if (defined(@entries[17])) {
-		  $featureset->pairs_used(@entries[17]);
+		  $featuregroup->pairs_used(@entries[17]);
 		}
 		if (defined(@entries[18])) {
-		  $featureset->pairs_inavg(@entries[18]);
+		  $featuregroup->pairs_inavg(@entries[18]);
 		}
 		if (defined(@entries[19])) {
-		  $featureset->pos_fraction(@entries[19]);
+		  $featuregroup->pos_fraction(@entries[19]);
 		}
 		if (defined(@entries[20])) {
-		  $featureset->log_avg(@entries[20]);
+		  $featuregroup->log_avg(@entries[20]);
 		}
 		if (defined(@entries[21])) {
-		  $featureset->pos_neg(@entries[21]);
+		  $featuregroup->pos_neg(@entries[21]);
 		}
 		if (defined(@entries[22])) {
-		  $featureset->avg_diff(@entries[22]);
+		  $featuregroup->avg_diff(@entries[22]);
 		}
 		if (defined(@entries[23])) {
-		  $featureset->abs_call(@entries[23]);
+		  $featuregroup->abs_call(@entries[23]);
 		}
 		if (defined(@entries[24])) {
-		  $featureset->inc(@entries[24]);
+		  $featuregroup->inc(@entries[24]);
 		}
 		if (defined(@entries[25])) {
-		  $featureset->dec(@entries[25]);
+		  $featuregroup->dec(@entries[25]);
 		}
 		if (defined(@entries[26])) {
-		  $featureset->inc_ratio(@entries[26]);
+		  $featuregroup->inc_ratio(@entries[26]);
 		}
 		if (defined(@entries[27])) {
-		  $featureset->dec_ratio(@entries[27]);
+		  $featuregroup->dec_ratio(@entries[27]);
 		}
 		if (defined(@entries[28])) {
-		  $featureset->pos_change(@entries[28]);
+		  $featuregroup->pos_change(@entries[28]);
 		}
 		if (defined(@entries[29])) {
-		  $featureset->neg_change(@entries[29]);
+		  $featuregroup->neg_change(@entries[29]);
 		}
 		if (defined(@entries[30])) {
-		  $featureset->inc_dec(@entries[30]);
+		  $featuregroup->inc_dec(@entries[30]);
 		}
 		if (defined(@entries[31])) {
-		  $featureset->dpos-dneg_ratio(@entries[31]);
+		  $featuregroup->dpos-dneg_ratio(@entries[31]);
 		}
 		if (defined(@entries[32])) {
-		  $featureset->log_avg_ratio_change(@entries[32]);
+		  $featuregroup->log_avg_ratio_change(@entries[32]);
 		}
 		if (defined(@entries[33])) {
-		  $featureset->diff_call(@entries[33]);
+		  $featuregroup->diff_call(@entries[33]);
 		}
 		if (defined(@entries[34])) {
-		  $featureset->avg_diff_change(@entries[34]);
+		  $featuregroup->avg_diff_change(@entries[34]);
 		}
 		if (defined(@entries[35])) {
-		  $featureset->b_a(@entries[35]);
+		  $featuregroup->b_a(@entries[35]);
 		}
 		if (defined(@entries[36])) {
-		  $featureset->fold_change(@entries[36]);
+		  $featuregroup->fold_change(@entries[36]);
 		}
 		if (defined(@entries[37])) {
-		  $featureset->sort_score(@entries[37]);
+		  $featuregroup->sort_score(@entries[37]);
 		}
 	  } elsif ($self->mode eq 'DATATYPE1') {
 		chomp($line);
@@ -252,115 +252,115 @@ sub load_data {
 		  return;
 		} else {
 		  if (defined(@entries[0])) {
-			my $featureset = $self->array->featureset($self->array->name);
+			my $featuregroup = $self->array->featureset($self->array->name);
 
 			if (defined(@entries[0])) { 
-			  $featureset->probe_set_name(@entries[0]);
+			  $featuregroup->probe_set_name(@entries[0]);
 			}
 			if (defined(@entries[1])) { 
-			  $featureset->stat_pairs(@entries[1]);
+			  $featuregroup->stat_pairs(@entries[1]);
 			}
 			if (defined(@entries[2])) { 
-			  $featureset->stat_pairs_used(@entries[2]);
+			  $featuregroup->stat_pairs_used(@entries[2]);
 			}
 			if (defined(@entries[3])) { 
-			  $featureset->signal(@entries[3]);
+			  $featuregroup->signal(@entries[3]);
 			}
 			if (defined(@entries[4])) { 
-			  $featureset->detection(@entries[4]);
+			  $featuregroup->detection(@entries[4]);
 			}
 			if (defined(@entries[5])) { 
-			  $featureset->detection_p-value(@entries[5]);
+			  $featuregroup->detection_p-value(@entries[5]);
 			}
 			if (defined(@entries[6])) { 
-			  $featureset->stat_common_pairs(@entries[6]);
+			  $featuregroup->stat_common_pairs(@entries[6]);
 			}
 			if (defined(@entries[7])) { 
-			  $featureset->signal_log_ratio(@entries[7]);
+			  $featuregroup->signal_log_ratio(@entries[7]);
 			}
 			if (defined(@entries[8])) { 
-			  $featureset->signal_log_ratio_low(@entries[8]);
+			  $featuregroup->signal_log_ratio_low(@entries[8]);
 			}
 			if (defined(@entries[9])) { 
-			  $featureset->signal_log_ratio_high(@entries[9]);
+			  $featuregroup->signal_log_ratio_high(@entries[9]);
 			}
 			if (defined(@entries[10])) { 
-			  $featureset->change(@entries[10]);
+			  $featuregroup->change(@entries[10]);
 			}
 			if (defined(@entries[11])) { 
-			  $featureset->change_p-value(@entries[11]);
+			  $featuregroup->change_p-value(@entries[11]);
 			}
 			if (defined(@entries[12])) { 
-			  $featureset->positive(@entries[12]);
+			  $featuregroup->positive(@entries[12]);
 			}
 			if (defined(@entries[13])) { 
-			  $featureset->negative(@entries[13]);
+			  $featuregroup->negative(@entries[13]);
 			}
 			if (defined(@entries[14])) { 
-			  $featureset->pairs(@entries[14]);
+			  $featuregroup->pairs(@entries[14]);
 			}
 			if (defined(@entries[15])) { 
-			  $featureset->pairs_used(@entries[15]);
+			  $featuregroup->pairs_used(@entries[15]);
 			}
 			if (defined(@entries[16])) { 
-			  $featureset->pairs_inavg(@entries[16]);
+			  $featuregroup->pairs_inavg(@entries[16]);
 			}
 			if (defined(@entries[17])) { 
-			  $featureset->pos_fraction(@entries[17]);
+			  $featuregroup->pos_fraction(@entries[17]);
 			}
 			if (defined(@entries[18])) { 
-			  $featureset->log_avg(@entries[18]);
+			  $featuregroup->log_avg(@entries[18]);
 			}
 			if (defined(@entries[19])) { 
-			  $featureset->pos_neg(@entries[19]);
+			  $featuregroup->pos_neg(@entries[19]);
 			}
 			if (defined(@entries[20])) { 
-			  $featureset->avg_diff(@entries[20]);
+			  $featuregroup->avg_diff(@entries[20]);
 			}
 			if (defined(@entries[21])) { 
-			  $featureset->abs_call(@entries[21]);
+			  $featuregroup->abs_call(@entries[21]);
 			}
 			if (defined(@entries[22])) { 
-			  $featureset->inc(@entries[22]);
+			  $featuregroup->inc(@entries[22]);
 			}
 			if (defined(@entries[23])) { 
-			  $featureset->dec(@entries[23]);
+			  $featuregroup->dec(@entries[23]);
 			}
 			if (defined(@entries[24])) { 
-			  $featureset->inc_ratio(@entries[24]);
+			  $featuregroup->inc_ratio(@entries[24]);
 			}
 			if (defined(@entries[25])) { 
-			  $featureset->dec_ratio(@entries[25]);
+			  $featuregroup->dec_ratio(@entries[25]);
 			}
 			if (defined(@entries[26])) { 
-			  $featureset->pos_change(@entries[26]);
+			  $featuregroup->pos_change(@entries[26]);
 			}
 			if (defined(@entries[27])) { 
-			  $featureset->neg_change(@entries[27]);
+			  $featuregroup->neg_change(@entries[27]);
 			}
 			if (defined(@entries[28])) { 
-			  $featureset->inc_dec(@entries[28]);
+			  $featuregroup->inc_dec(@entries[28]);
 			}
 			if (defined(@entries[29])) { 
-			  $featureset->dpos-dneg_ratio(@entries[29]);
+			  $featuregroup->dpos-dneg_ratio(@entries[29]);
 			}
 			if (defined(@entries[30])) { 
-			  $featureset->log_avg_ratio_change(@entries[30]);
+			  $featuregroup->log_avg_ratio_change(@entries[30]);
 			}
 			if (defined(@entries[31])) { 
-			  $featureset->diff_call(@entries[31]);
+			  $featuregroup->diff_call(@entries[31]);
 			}
 			if (defined(@entries[32])) { 
-			  $featureset->avg_diff_change(@entries[32]);
+			  $featuregroup->avg_diff_change(@entries[32]);
 			}
 			if (defined(@entries[33])) { 
-			  $featureset->b_a(@entries[33]);
+			  $featuregroup->b_a(@entries[33]);
 			}
 			if (defined(@entries[34])) { 
-			  $featureset->fold_change(@entries[34]);
+			  $featuregroup->fold_change(@entries[34]);
 			}
 			if (defined(@entries[35])) { 
-			  $featureset->sort_score(@entries[35]);
+			  $featuregroup->sort_score(@entries[35]);
 			}
 		  }
 		}
