@@ -66,7 +66,7 @@ package Bio::Expression::MicroarrayIO::dchipxls;
 use strict;
 use Bio::Root::Root;
 use Bio::Expression::MicroarrayIO;
-use Bio::Expression::Microarray::Affymetrix::dChipXLS;
+use Bio::Expression::Microarray::Affymetrix::dChipArray;
 use IO::File;
 
 use base qw(Bio::Root::Root Bio::Expression::MicroarrayIO);
