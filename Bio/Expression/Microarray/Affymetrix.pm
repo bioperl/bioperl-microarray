@@ -76,12 +76,12 @@ sub _initialize{
   my %param = @args;
   @param{ map { lc $_ } keys %param } = values %param; # lowercase keys
 
-  $self->celfile($param{cel}) || die "no CEL parameter provided to new()";
-  $self->cdffile($param{cdf}) || die "no CDF parameter provided to new()";
+  $self->celfile($param{-celfile}) || die "no CEL parameter provided to new()";
+  $self->cdffile($param{-cdffile}) || die "no CDF parameter provided to new()";
 
-warn "loading cdf...";
+#warn "loading cdf...";
   $self->load_cdf();
-warn "loading cel...";
+#warn "loading cel...";
   $self->load_cel();
 }
 
@@ -115,8 +115,9 @@ sub load_cel {
 
   my $cel = Bio::Expression::Microarray::Affymetrix::Cel->new(
 						  -file => $self->celfile,
-						  -cdf  => $self->cdf,
 						  );
+  $cel->cdf($self->cdf);
+
   $cel->load_cel;
   $self->cel($cel);
 }
@@ -127,7 +128,7 @@ sub load_cdf {
 
   my $cdf = Bio::Expression::Microarray::Affymetrix::CDF->new(
 						  -file => $self->cdffile,
-#			                          -cel  => $self->cel,
+#			                           cel  => $self->cel,
 						  );
   $cdf->load_cdf;
   $self->cdf($cdf);

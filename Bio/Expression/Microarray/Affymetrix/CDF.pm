@@ -89,15 +89,16 @@ sub matrix {
   my($self,@args) = @_;
   $self->{matrix} = [] unless defined $self->{matrix};
 
-  $self->{matrix}->[$args[0]][$args[1]] = $args[2] if $args[2];
+  $self->{matrix}->[$args[0]][$args[1]] = $args[2] if defined $args[2];
   return $self->{matrix}->[$args[0]][$args[1]];
 }
 
-#sub matrix {
-#  my($self,@args) = @_;
-#  $self->{matrix} = mzeroes(@args) if @args;
-#  return $self->{matrix};
-#}
+sub heavy {
+  my($self,$arg) = @_;
+  return $self->{heavy} if !$arg;
+  $self->{heavy} = $arg;
+  return $self->{heavy};
+}
 
 sub probeset {
   my($self,$arg) = @_;
@@ -151,6 +152,8 @@ sub load_cdf {
 	chomp;
 	next unless $_;
 
+print "$mode\r";
+
     my($key,$value) = (undef,undef);
     if(my($try) = /^\[(.+)\]/){
       $mode = $try;
@@ -180,14 +183,19 @@ sub load_cdf {
 	  next unless $attrs;
       my @attrs = split /\t/, $attrs;
 
-	  my $probe = Bio::Expression::Microarray::Probe->new(
-									  x	=>	$attrs[QC_X],
-									  y	=>	$attrs[QC_Y],
-									  probe	=>	$attrs[QC_PROBE],
-									  length	=>	$attrs[QC_PLEN],
-									  atom	=>	$attrs[QC_ATOM],
-									  index	=>	$attrs[QC_INDEX],
-							 );
+          my %probeparams = (
+		  x		=>	$attrs[QC_X],
+		  y		=>	$attrs[QC_Y],
+          );
+
+          if($self->heavy){
+                  $probeparams{probe} = 	$attrs[QC_PROBE];
+                  $probeparams{length} = 	$attrs[QC_PLEN];
+                  $probeparams{atom} = 		$attrs[QC_ATOM];
+                  $probeparams{index} = 	$attrs[QC_INDEX];
+          }
+
+	  my $probe = Bio::Expression::Microarray::Probe->new( %probeparams );
 	  $self->matrix($attrs[UNIT_X],$attrs[UNIT_Y],\$probe);
 	  $probeset->add_probe($probe);
     }
@@ -209,24 +217,29 @@ sub load_cdf {
       my($probe,$attrs) = $_ =~ /Cell(\d+)=(.+)/;
       my @attrs = split /\t/, $attrs;
 
-      my $probe = Bio::Expression::Microarray::Probe->new(
-									   x      =>	$attrs[UNIT_X],
-									   y	  =>	$attrs[UNIT_Y],
-									   probe  =>	$attrs[UNIT_PROBE],
-									   feat   =>    $attrs[UNIT_FEAT],
-									   name   =>    $attrs[UNIT_QUAL],
-									   expos  =>    $attrs[UNIT_EXPOS],
-									   pos    =>    $attrs[UNIT_POS],
-									   cbase  =>    $attrs[UNIT_CBASE],
-									   pbase  =>    $attrs[UNIT_PBASE],
-									   tbase  =>    $attrs[UNIT_TBASE],
-									   atom	  =>	$attrs[UNIT_ATOM],
-									   index  =>	$attrs[UNIT_INDEX],
-									   codon_index	=>	$attrs[UNIT_CODONIND],
-									   codon  =>	$attrs[UNIT_CODON],
-									   regiontype	=>	$attrs[UNIT_REGIONTYPE],
-									   region =>	$attrs[UNIT_REGION],
+      my %probeparams = (
+	   x      =>	$attrs[UNIT_X],
+	   name   =>    $attrs[UNIT_QUAL],
+	   y	  =>	$attrs[UNIT_Y],
       );
+
+      if($self->heavy){
+		$probeparams{probe} = 		$attrs[UNIT_PROBE];
+		$probeparams{feat} = 		$attrs[UNIT_FEAT];
+		$probeparams{expos} = 		$attrs[UNIT_EXPOS];
+		$probeparams{pos} = 		$attrs[UNIT_POS];
+		$probeparams{cbase} = 		$attrs[UNIT_CBASE];
+		$probeparams{pbase} = 		$attrs[UNIT_PBASE];
+		$probeparams{tbase} = 		$attrs[UNIT_TBASE];
+		$probeparams{atom} = 		$attrs[UNIT_ATOM];
+		$probeparams{index} = 		$attrs[UNIT_INDEX];
+		$probeparams{codon_index} = 	$attrs[UNIT_CODONIND];
+		$probeparams{codon} = 		$attrs[UNIT_CODON];
+		$probeparams{regiontype} = 	$attrs[UNIT_REGIONTYPE];
+		$probeparams{region} = 		$attrs[UNIT_REGION];
+      }
+
+      my $probe = Bio::Expression::Microarray::Probe->new( %probeparams);
 
 	  $self->matrix($attrs[UNIT_X],$attrs[UNIT_Y],\$probe);
 

@@ -61,17 +61,10 @@ use base qw(Bio::Root::Root Bio::Root::IO);
 use vars qw($DEBUG);
 
 use Class::MethodMaker
-  get_set => [qw( cdf use_pdl)],
+#use Class::MakeMethods::Emulator::MethodMaker
+  get_set => [qw( cdf )],
   new_with_init => 'new',
 ;
-
-#sub new {
-#  my($class,@args) = @_;
-#  my $self = bless {}, $class;
-#  $self->_initialize(@args);
-#  return $self;
-#}
-
 
 sub _initialize {
   return shift->init(@_);
@@ -87,7 +80,13 @@ sub init{
   defined $usetempfile && $self->use_tempfile($usetempfile);
   $DEBUG = 1 if( ! defined $DEBUG && $self->verbose > 0);
 
-  $self->load_cel;
+#warn $self->cdf;
+  foreach my $arg (keys %args){
+    $self->$_($args{$_}) if $self->can($_);
+  }
+#warn $self->cdf;
+
+#  $self->load_cel;
 }
 
 sub matrix {
@@ -125,10 +124,6 @@ sub load_cel {
       $self->{$key} = $value if $key;
     }
     elsif($mode eq 'INTENSITY'){
-#      if(!defined $self->{matrix}){
-#        $self->matrix($self->{Rows},$self->{Cols},5);
-#      }
-
       if($key){
         $self->{$key} = $value if $key;
         next;
@@ -139,18 +134,9 @@ sub load_cel {
 
 print STDERR sprintf("%-60s\r",sprintf("%3d %3d is %f",$row[1],$row[0],$row[2]));
 
-
 	my $probe = $self->cdf->matrix($row[0],$row[1]);
-warn $probe;
+	$$probe->value($row[2]) if $probe;
 
-#        $self->cdf->matrix( $row[0], $row[1], $row[2] );
-#        $self->cdf->matrix( $row[0], $row[1], $row[3] );
-#        $self->cdf->matrix( $row[0], $row[1], $row[4] );
-
-
-#        $self->matrix->set($row[0],$row[1],0,$row[2]);
-#        $self->matrix->set($row[0],$row[1],1,$row[3]);
-#        $self->matrix->set($row[0],$row[1],2,$row[4]);
     }
     elsif($mode eq 'MASKS'){}
     elsif($mode eq 'OUTLIERS'){}

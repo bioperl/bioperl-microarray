@@ -53,27 +53,11 @@ use strict;
 use base qw(Bio::Expression::ProbeI Bio::Root::Root);
 use vars qw($DEBUG);
 
-use Class::MethodMaker
-  get_set => [qw(x y probe feat name expos pos cbase pbase tbase atom index codon_index codon regiontype region
-				 length
+use Class::MakeMethods::Template::Flyweight
+  scalar => [qw(x y probe feat name expos pos cbase pbase tbase atom index codon_index codon regiontype region
+		length value value_units
 				)],
-  new_with_init => 'new',
+  new => 'new',
 ;
-
-
-sub _initialize {
-  return shift->init(@_);
-}
-
-sub init{
-  my ($self,@args) = @_;
-  my %param = @args;
-  $self->$_($param{$_}) foreach keys %param;
-
-  $self->SUPER::_initialize(@args);
-
-  #print STDERR sprintf("%-60s\r", sprintf("new probe at %03dx%03d, %20s",$param{x},$param{y},$param{name}));
-  #$DEBUG = 1 if( ! defined $DEBUG && $self->verbose > 0);
-}
 
 1;

@@ -50,8 +50,8 @@ methods. Internal methods are usually preceded with a _
 package Bio::Expression::Microarray::Probeset;
 
 use strict;
-use PDL;
-use PDL::Matrix;
+#use PDL;
+#use PDL::Matrix;
 
 use base qw(Bio::Root::Root);
 use vars qw($DEBUG);
