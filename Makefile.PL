@@ -69,25 +69,6 @@ $NAME     = 'Bio';
 $DISTNAME = "bioperl";
 $VERSION  = "1.1";
 
-if( $do_autoload_finesse == 1 ) {
-    fatal("Autoload finessing does not work at the moment!");
-}
-
-
-
-@BACKUP_FILES = qw(./Seq.pm.bak);
-
-#
-# This does an inplace edit on Seq.pm
-#
-
-if( $do_autoload_finesse ) {
-
-    print "Bioperl module installation\nPreparing modules for AUTOLOADing...";
-    `perl -p -i.bak -e 's/#__END__/__END__/' Seq.pm`;
-    print "done.\n\n";
-}
-
 $error = 0;
 print "\n";
 foreach $name ( keys %packages ) {
@@ -130,7 +111,3 @@ WriteMakefile(
     'realclean' => {  FILES        => join(' ',@BACKUP_FILES) },
     DIR         => [  ], # directories with other Makefile.PL's in them
 );
-
-
-
-
