@@ -211,7 +211,7 @@ sub load_array {
 #				  -file => $self->templatefile,
 																 );
 
-  open(my $t,$self->templatefile) or $self->throw("Couldn't open templatefile(): $!");
+  open(my $t,$self->templatefile) or $self->throw("Couldn't open templatefile(): ".$self->templatefile.": $!");
   while(<$t>){
 	$array->load_data($_);
   }
