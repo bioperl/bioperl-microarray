@@ -20,6 +20,7 @@ MANIFEST
 Makefile.PL
 eg/133a.cdf
 eg/133a.cel
+eg/133a.exp
 eg/133a.txt
 eg/133a.xls
 eg/GenePix_Pro_3.0.6.89.gpr

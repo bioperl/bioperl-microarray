@@ -1,0 +1,49 @@
+Affymetrix GeneChip Experiment Information
+Version	1
+
+[Sample Info]
+Chip Type	HG-U133A
+Chip Lot	2003313
+Operator	j.c.
+Sample Type	
+Description	
+Project	
+Comments	hyb. only
+Solution Type	
+Solution Lot	
+
+[Fluidics]
+Protocol	EukGE-WS2v4
+Wash A1 Recovery Mixes	0
+Wash A1 Temperature (C)	25
+Number of Wash A1 Cycles	10
+Mixes per Wash A1 Cycle	2
+Wash B Recovery Mixes	0
+Wash B Temperature (C)	50
+Number of Wash B Cycles	4
+Mixes per Wash B Cycle	15
+Stain Temperature (C)	25
+First Stain Time (seconds)	600
+Wash A2 Recovery Mixes	0
+Wash A2 Temperature (C)	25
+Number of Wash A2 Cycles	10
+Mixes per Wash A2 Cycle	4
+Second Stain Time (seconds)	600
+Third Stain Time (seconds)	600
+Wash A3 Recovery Mixes	0
+Wash A3 Temperature (C)	30
+Number of Wash A3 Cycles	15
+Mixes per Wash A3 Cycle	4
+Holding Temperature (C)	25
+Station	1
+Module	2
+Hybridize Date	Jul 23 2002 04:15PM
+
+[Scanner]
+Pixel Size	3
+Filter	570
+Scan Temperature	
+Scan Date	Jul 23 2002 04:45PM
+Scanner ID	
+Number of Scans	2
+Scanner Type	HP
