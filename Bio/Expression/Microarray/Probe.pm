@@ -54,9 +54,12 @@ use base qw(Bio::Expression::ProbeI Bio::Root::Root);
 use vars qw($DEBUG);
 
 use Class::MakeMethods::Template::Flyweight
-  scalar => [qw(x y probe feat name expos pos cbase pbase tbase atom index codon_index codon regiontype region
-		length value value_units
-				)],
+  scalar => [qw(x y probe feat name expos pos cbase pbase tbase
+				atom index codon_index codon regiontype region
+				length value value_units standard_deviation
+				samples is_match is_masked is_outlier is_modified
+			   )
+			],
   new => 'new',
 ;
 

@@ -50,8 +50,6 @@ methods. Internal methods are usually preceded with a _
 package Bio::Expression::Microarray::Probeset;
 
 use strict;
-#use PDL;
-#use PDL::Matrix;
 
 use base qw(Bio::Root::Root);
 use vars qw($DEBUG);
@@ -89,7 +87,7 @@ sub add_probe {
     push @{$self->{probes}}, $probe;
   }
 
-  return $self->{probes} ? @{$self->{probes}} : undef;
+  return $self->{probes} ? $self->{probes}->[-1] : undef;
 }
 
 sub this_probe {
@@ -107,14 +105,6 @@ sub each_probe_value {
   my @values = ();
   push @values, $_->value foreach $self->each_probe;
   return @values;
-}
-
-sub each_probe_value_PDL {
-  my $self = shift;
-  eval{require PDL};
-  if($@){ $self->throw("couldn't load PDL: $@") }
-
-  return PDL->new($self->values);
 }
 
 1;
