@@ -209,9 +209,9 @@ sub load_array {
 
   my $array = Bio::Expression::Microarray::Affymetrix::ArrayDesign->new(
 				  -file => $self->templatefile,
-																 );
-
-  open(my $t,$self->templatefile) or $self->throw("Couldn't open templatefile(): ".$self->templatefile.": $!");
+									 );
+  my $t;
+  open($t,$self->templatefile) or $self->throw("Couldn't open templatefile: ".$self->templatefile.": $!");
   while(<$t>){
 	$array->load_data($_);
   }

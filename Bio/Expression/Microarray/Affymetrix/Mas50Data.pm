@@ -38,8 +38,8 @@ sub new {
 sub featuregroup {
   my($self,$arg) = @_;
   return $self->{featuregroup}->{$arg} if $self->{featureset}->{$arg};
-  $self->{featuregroup}->{$arg} = Bio::Expression::FeatureSet::FeatureSetMas50->new()
-	or $self->throw("Couldn't create a Bio::Expression::FeatureSet::FeatureSetMas50 $!");
+  $self->{featuregroup}->{$arg} = Bio::Expression::FeatureGroup::FeatureGroupMas50->new()
+	or $self->throw("Couldn't create a Bio::Expression::FeatureGroup::FeatureGroupMas50 $!");
   return $self->{featuregroup}->{$arg};
 }
 
