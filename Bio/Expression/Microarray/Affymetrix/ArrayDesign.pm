@@ -227,7 +227,7 @@ sub load_data {
   elsif($self->mode =~ /^QC/){
 	return if /^CellHeader/;
 
-	my $featuregroup = $self->qcfeaturegroup($self->mode);
+	my $featuregroup = $self->qc_featuregroup($self->mode);
 
 	my($type) = $_ =~ /Type=(.+)/;
 
