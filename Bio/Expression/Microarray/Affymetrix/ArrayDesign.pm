@@ -269,7 +269,8 @@ sub load_data {
 	  $featuregroup = $self->featuregroup($self->_temp_name);
 	}
 
-	my($feature,$attrs) = $_ =~ /Cell(\d+)=(.+)/;
+	my($feature,$attrs) = (undef,undef);
+	($feature,$attrs) = $_ =~ /Cell(\d+)=(.+)/;
 	my @attrs = split /\t/, $attrs;
 
 	my %featureparams = (

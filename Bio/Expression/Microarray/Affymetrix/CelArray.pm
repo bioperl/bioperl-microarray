@@ -140,7 +140,7 @@ sub load_data {
 	  #objects for them, because their values are necessary to recreate a
 	  #CEL file.
 
-	  $feature = Bio::Expression::Microarray::Affymetrix::CelFeature->new(
+	  $feature = Bio::Expression::Microarray::Affymetrix::Feature->new(
 																		  x => $row[0],
 																		  y => $row[1]
 																		 );
