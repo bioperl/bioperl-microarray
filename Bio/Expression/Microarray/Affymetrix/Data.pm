@@ -60,7 +60,7 @@ use base qw(Bio::Root::Root Bio::Root::IO);
 use vars qw($DEBUG);
 
 use Class::MakeMethods::Emulator::MethodMaker
-  get_set => [qw( template mode )],
+  get_set => [qw( array mode )],
   new     => 'new',
 ;
 
@@ -76,14 +76,19 @@ sub load_data {
   ($key,$value) = $line =~ /^(.+?)=(.+)$/;
 
   if($self->mode eq 'CEL'){
-	$self->template->cel($self->template->cel . $line) if $key;
-  }
-  elsif($self->mode eq 'HEADER'){
-	$self->template->header($self->template->header . $line) if $key;
+	$self->array->cel($self->array->cel . $line) if $key;
+
+	$self->array->version($value) if $key eq 'Version';
+  } elsif($self->mode eq 'HEADER'){
+	$self->array->header($self->array->header . $line) if $key;
+
+	$self->array->algorithm($value) if $key eq 'Algorithm';
+	$self->array->algorithm_parameters($value) if $key eq 'AlgorithmParameters';
+	$self->array->dat_header($value) if $key eq 'DatHeader';
   }
   elsif($self->mode eq 'INTENSITY'){
 	if($key){
-	  $self->template->intensity($self->template->intensity . $line);
+	  $self->array->intensity($self->array->intensity . $line);
 	  next;
 	}
 	
@@ -93,7 +98,7 @@ sub load_data {
 	print STDERR sprintf("%-60s\r",sprintf("%3d %3d is %4.1f",$row[0],$row[1],$row[2])) if $DEBUG;
 	
 	next unless defined $row[1] and defined $row[2];
-	my $probe = $self->template->matrix($row[0],$row[1]);
+	my $probe = $self->array->matrix($row[0],$row[1]);
 	
 	if(defined $probe){
 	  $$probe->value($row[2]);
@@ -104,19 +109,19 @@ sub load_data {
 													   x =>	$row[0],
 													   y =>	$row[1],
 													  );
-	  $self->template->matrix($row[0],$row[1],\$probe);
+	  $self->array->matrix($row[0],$row[1],\$probe);
 	  $probe->value($row[2]);
 	  $probe->standard_deviation($row[3]);
 	  $probe->sample_count($row[4]);
 	}
   }
   elsif($self->mode eq 'MASKS'){
-	$self->template->masks($self->template->masks . $line) and next if $key;
+	$self->array->masks($self->array->masks . $line) and next if $key;
 
 	my @row = split /\t/, $line;
 	next unless @row;
 
-	my $probe = $self->template->matrix($row[0],$row[1]);
+	my $probe = $self->array->matrix($row[0],$row[1]);
 
 	if(defined $probe){
 	  next if $row[0] == 0 and $row[1] == 0; #why do i need to do this?
@@ -127,16 +132,16 @@ sub load_data {
 													   x =>	$row[0],
 													   y =>	$row[1],
 													  );
-	  $self->template->matrix($row[0],$row[1],\$probe);
+	  $self->array->matrix($row[0],$row[1],\$probe);
 	  $probe->is_masked(1);
 	}
   }
   elsif($self->mode eq 'OUTLIERS'){
-	$self->template->outliers($self->template->outliers . $line) and next if $key;
+	$self->array->outliers($self->array->outliers . $line) and next if $key;
 	
 	my @row = split /\t/, $line;
 	
-	my $probe = $self->template->matrix($row[0],$row[1]);
+	my $probe = $self->array->matrix($row[0],$row[1]);
 	
 	if(defined $probe){
 	  $$probe->is_outlier(1);
@@ -145,15 +150,15 @@ sub load_data {
 													   x =>	$row[0],
 													   y =>	$row[1],
 													  );
-	  $self->template->matrix($row[0],$row[1],\$probe);
+	  $self->array->matrix($row[0],$row[1],\$probe);
 	  $probe->is_outlier(1) and next;
 	}
   }
   elsif($self->mode eq 'MODIFIED'){
-	$self->template->modified($self->template->modified . $line) and next if $key;
+	$self->array->modified($self->array->modified . $line) and next if $key;
 	
 	my @row = split /\t/, $line;
-	my $probe = $self->template->matrix($row[0],$row[1]);
+	my $probe = $self->array->matrix($row[0],$row[1]);
 	
 	if(defined $probe){
 	  $$probe->is_modified(1);
@@ -162,7 +167,7 @@ sub load_data {
 													   x =>	$row[0],
 													   y =>	$row[1],
 													  );
-	  $self->template->matrix($row[0],$row[1],\$probe);
+	  $self->array->matrix($row[0],$row[1],\$probe);
 	  $probe->is_modified(1) and next;
 	}
   }

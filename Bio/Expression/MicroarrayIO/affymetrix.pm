@@ -218,16 +218,16 @@ sub next_array {
 
   print STDERR "loading data...\n" if $self->verbose;
 
-  my $array = new Bio::Expression::Microarray::Affymetrix::Data;
-  $array->template($self->template);
+  my $data = new Bio::Expression::Microarray::Affymetrix::Data;
+  $data->array($self->array);
 
   my $start = 1;
   while( defined( $_ = $self->_readline(-raw=>1) ) ){
 	#skip to the beginning of the file
 	if($_ =~ m!\[CEL\]!){
 	  if($start == 0){
-		$array = new Bio::Expression::Microarray::Affymetrix::Data;
-		$array->template($self->template);
+		$data = new Bio::Expression::Microarray::Affymetrix::Data;
+		$data->template($self->array);
 		print STDERR "loaded data!\n" if $self->verbose;
 		#return $self->template;
 	  }
@@ -236,13 +236,13 @@ sub next_array {
 	next if $start;
 
 	#slurp up the data
-	$array->load_data($_);
+	$data->load_data($_);
   }
 
   print STDERR "loaded data!\n" if $self->verbose;
 
   #for the last (or only) file in the input stream
-  return $self->template;
+  return $self->array;
 }
 
 =head2 write_array

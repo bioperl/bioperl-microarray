@@ -64,7 +64,7 @@ use enum qw(:UNIT_ X Y PROBE FEAT QUAL EXPOS POS CBASE PBASE TBASE ATOM INDEX CO
 use Class::MakeMethods::Emulator::MethodMaker
   get_set       => [ qw(
 						cel header modified intensity masks outliers modified heavy
-						algorithm algorith_parameters name date type
+						algorithm algorithm_parameters name date type version dat_header
 					   )
 				   ],
   new_with_init => 'new',
@@ -178,17 +178,17 @@ sub load_cdf {
 	  next unless $attrs;
       my @attrs = split /\t/, $attrs;
 
-          my %probeparams = (
-		  x		=>	$attrs[QC_X],
-		  y		=>	$attrs[QC_Y],
-          );
+	  my %probeparams = (
+						 x		=>	$attrs[QC_X],
+						 y		=>	$attrs[QC_Y],
+						);
 
-          if($self->heavy){
-                  $probeparams{probe} = 	$attrs[QC_PROBE];
-                  $probeparams{length} = 	$attrs[QC_PLEN];
-                  $probeparams{atom} = 		$attrs[QC_ATOM];
-                  $probeparams{index} = 	$attrs[QC_INDEX];
-          }
+	  if($self->heavy){
+		$probeparams{probe} = 	$attrs[QC_PROBE];
+		$probeparams{length} = 	$attrs[QC_PLEN];
+		$probeparams{atom} = 		$attrs[QC_ATOM];
+		$probeparams{index} = 	$attrs[QC_INDEX];
+	  }
 
 	  my $probe = Bio::Expression::Microarray::Affymetrix::Probe->new( %probeparams );
 	  $self->matrix($attrs[UNIT_X],$attrs[UNIT_Y],\$probe);
@@ -229,7 +229,7 @@ sub load_cdf {
 		$probeparams{tbase} = 		$attrs[UNIT_TBASE];
 		$probeparams{atom} = 		$attrs[UNIT_ATOM];
 		$probeparams{index} = 		$attrs[UNIT_INDEX];
-		$probeparams{codon_index} = 	$attrs[UNIT_CODONIND];
+		$probeparams{codon_index} = $attrs[UNIT_CODONIND];
 		$probeparams{codon} = 		$attrs[UNIT_CODON];
 		$probeparams{regiontype} = 	$attrs[UNIT_REGIONTYPE];
 		$probeparams{region} = 		$attrs[UNIT_REGION];
