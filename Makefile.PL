@@ -14,8 +14,8 @@
 
 # All Bioperl dependencies on external modules are defined here
 %packages = (
-	     'Class::MakeMethods::Emulator' => '0.0/Autogeneration of Methods/Saves wear on the wrists & fingers/Bio::Expression::Microarray*',
-	     'enum'                     => '0.0/C style enumerated types and bitmask flags in Perl/Bio::Microarray::Affymetrix::*',
+	     'Class::MakeMethods::Emulator' => '1.008/Autogeneration of Methods/Saves wear on the wrists & fingers/Bio::Expression::Microarray*',
+	     'enum'                         => '0.0/C style enumerated types and bitmask flags in Perl/Bio::Microarray::Affymetrix::*',
 	     );
 
 sub check_package {

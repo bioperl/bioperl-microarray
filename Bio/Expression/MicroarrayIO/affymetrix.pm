@@ -69,7 +69,7 @@ use Bio::Expression::Microarray::Affymetrix::ArrayDesign;
 use IO::File;
 
 use base qw(Bio::Root::Root Bio::Expression::MicroarrayIO);
-use vars qw($DEBUG $started);
+use vars qw($started);
 
 use constant CRLF => "\015\012";
 
@@ -117,20 +117,16 @@ sub _initialize{
   my ($self,@args) = @_;
   $self->SUPER::_initialize(@args);
   $self->_initialize_io(@args);
-  my ($usetempfile) = $self->_rearrange([qw(TEMPFILE)],@args);
-  defined $usetempfile && $self->use_tempfile($usetempfile);
-  $DEBUG = 1 if( ! defined $DEBUG && $self->verbose > 0);
 
   my %param = @args;
   @param{ map { lc $_ } keys %param } = values %param; # lowercase keys
+  $self->verbose($param{-verbose});
 
   if($param{-file} or $param{-fh}){
-#  if($self->mode eq 'r'){
 	print STDERR "loading array template and data...\n" if $self->verbose;
 
 	$self->datafile($param{-file});
 	$self->templatefile($param{-template});
-	$self->load_array();
 
 	print STDERR "array template loaded!...\n" if $self->verbose;
   }
@@ -205,6 +201,9 @@ sub array {
 sub load_array {
   my($self,$arg) = @_;
 
+  return $self->array if defined($self->array);
+
+  warn "loading array..." if $self->verbose;
   $self->templatefile($arg) if defined $arg;
 
   my $array = Bio::Expression::Microarray::Affymetrix::ArrayDesign->new(
@@ -233,6 +232,7 @@ sub load_array {
 
 sub next_array {
   my $self = shift;
+  $self->load_array();
   $self->array->destroy_features;
   print STDERR "loading data...\n" if $self->verbose;
 

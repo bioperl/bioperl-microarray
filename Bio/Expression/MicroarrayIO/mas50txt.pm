@@ -64,7 +64,7 @@ use Bio::Expression::Microarray::Affymetrix::Mas50TxtArray;
 use IO::File;
 
 use base qw(Bio::Root::Root Bio::Expression::MicroarrayIO);
-use vars qw($DEBUG $started);
+use vars qw($started);
 
 use constant CRLF => "\015\012";
 
@@ -83,7 +83,7 @@ sub datafile {
 }
  
 
-=Head2 new
+=head2 new
 
  Title   : new
  Usage   : Bio::Expression::MicroarrayIO::mas50txt->new(
@@ -108,9 +108,6 @@ sub _initialize{
   my ($self,@args) = @_;
   $self->SUPER::_initialize(@args);
   $self->_initialize_io(@args);
-  my ($usetempfile) = $self->_rearrange([qw(TEMPFILE)],@args);
-  defined $usetempfile && $self->use_tempfile($usetempfile);
-  $DEBUG = 1 if( ! defined $DEBUG && $self->verbose > 0);
 
   my %param = @args;
   @param{ map { lc $_ } keys %param } = values %param; # lowercase keys

@@ -244,25 +244,6 @@ sub _guess_format {
    return 'mas50txt'   if /\.txt$/i;
 }
 
-=head2 use_tempfile
-
- Title   : use_tempfile
- Usage   : $stream->use_tempfile($newval)
- Function: Get/Set boolean flag on whether or not use a tempfile
- Example :
- Returns : value of use_tempfile
- Args    : newvalue (optional)
-
-=cut
-
-sub use_tempfile{
-  my ($self,$value) = @_;
-  if( defined $value) {
-	$self->{'_use_tempfile'} = $value;
-  }
-  return $self->{'_use_tempfile'};
-}
-
 sub DESTROY {
     my $self = shift;
     $self->close();

@@ -45,12 +45,13 @@ my $affx = Bio::Expression::MicroarrayIO->new(
 						-file     => './eg/133a.cel',
 						-template => './eg/133a.cdf',
 						-format   => 'affymetrix',
+						-verbose  => 0,
 					   );
 ok 6;
 my $array = $affx->next_array;
 ok 7;
 
-my $out = Bio::Expression::MicroarrayIO->new(-file => '>./eg/3.CEL', -format => 'affymetrix');
+my $out = Bio::Expression::MicroarrayIO->new(-file => '>./eg/3.CEL', -format => 'affymetrix', -verbose => 0);
 ok 8;
 $out->write_array($array);
 ok 9;
