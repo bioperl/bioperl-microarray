@@ -56,6 +56,7 @@ use Class::MakeMethods::Template::Flyweight
   scalar => [qw(
 				probe feat expos pos cbase pbase tbase
 				atom index codon_index codon regiontype region
+				length value standard_deviation sample_count
 			   )
 			],
   new => 'new',

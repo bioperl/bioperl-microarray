@@ -53,7 +53,7 @@ package Bio::Expression::Microarray::Affymetrix::Data;
 use strict;
 use Bio::Root::Root;
 use Bio::Root::IO;
-use Bio::Expression::Microarray::Probe;
+use Bio::Expression::Microarray::Affymetrix::Probe;
 use IO::File;
 
 use base qw(Bio::Root::Root Bio::Root::IO);
@@ -90,7 +90,7 @@ sub load_data {
 	$line =~ s/\s*(.+)\s*/$1/; #clean up spaces;
 	my @row = split /\s+/, $line;
 	
-	print STDERR sprintf("%-60s\r",sprintf("%3d %3d is %4.1f",$row[0],$row[1],$row[2]));
+	print STDERR sprintf("%-60s\r",sprintf("%3d %3d is %4.1f",$row[0],$row[1],$row[2])) if $DEBUG;
 	
 	next unless defined $row[1] and defined $row[2];
 	my $probe = $self->template->matrix($row[0],$row[1]);
@@ -98,16 +98,16 @@ sub load_data {
 	if(defined $probe){
 	  $$probe->value($row[2]);
 	  $$probe->standard_deviation($row[3]);
-	  $$probe->samples($row[4]);
+	  $$probe->sample_count($row[4]);
 	} else {
-	  $probe = Bio::Expression::Microarray::Probe->new(
+	  $probe = Bio::Expression::Microarray::Affymetrix::Probe->new(
 													   x =>	$row[0],
 													   y =>	$row[1],
 													  );
 	  $self->template->matrix($row[0],$row[1],\$probe);
 	  $probe->value($row[2]);
 	  $probe->standard_deviation($row[3]);
-	  $probe->samples($row[4]);
+	  $probe->sample_count($row[4]);
 	}
   }
   elsif($self->mode eq 'MASKS'){
@@ -123,7 +123,7 @@ sub load_data {
 
 	  $$probe->is_masked(1);
 	} else {
-	  $probe = Bio::Expression::Microarray::Probe->new(
+	  $probe = Bio::Expression::Microarray::Affymetrix::Probe->new(
 													   x =>	$row[0],
 													   y =>	$row[1],
 													  );
@@ -141,7 +141,7 @@ sub load_data {
 	if(defined $probe){
 	  $$probe->is_outlier(1);
 	} else {
-	  $probe = Bio::Expression::Microarray::Probe->new(
+	  $probe = Bio::Expression::Microarray::Affymetrix::Probe->new(
 													   x =>	$row[0],
 													   y =>	$row[1],
 													  );
@@ -158,7 +158,7 @@ sub load_data {
 	if(defined $probe){
 	  $$probe->is_modified(1);
 	} else {
-	  $probe = Bio::Expression::Microarray::Probe->new(
+	  $probe = Bio::Expression::Microarray::Affymetrix::Probe->new(
 													   x =>	$row[0],
 													   y =>	$row[1],
 													  );

@@ -85,7 +85,7 @@ sub new {
 
 sub _initialize{
   my ($self,@args) = @_;
-  my %params = @args;
+  my %param = @args;
 
   $self->type($param{-type});
   $self->id($param{-id}    );

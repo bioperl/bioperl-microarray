@@ -54,7 +54,7 @@ use strict;
 use Bio::Root::Root;
 use Bio::Expression::MicroarrayIO;
 use Bio::Expression::Microarray::Affymetrix::Data;
-use Bio::Expression::Microarray::Affymetrix::Template;
+use Bio::Expression::Microarray::Affymetrix::Array;
 use IO::File;
 
 use base qw(Bio::Root::Root Bio::Expression::MicroarrayIO);
@@ -113,10 +113,15 @@ sub _initialize{
   my %param = @args;
   @param{ map { lc $_ } keys %param } = values %param; # lowercase keys
 
-  $self->templatefile($param{-template}) || die "no template provided to new()";
-  $self->datafile($param{-file}) || die "no data file provided to new()";
+  if($self->mode eq 'r'){
+	print STDERR "loading array template and data...\n" if $self->verbose;
 
-  $self->load_template();
+	$self->datafile($param{-file}) || $self->throw("no data file provided to new()");
+	$self->templatefile($param{-template});
+	$self->load_array();
+
+	print STDERR "array template loaded!...\n" if $self->verbose;
+  }
 }
 
 =head2 templatefile
@@ -153,48 +158,48 @@ sub datafile {
   return $self->{datafile};
 }
 
-=head2 template
+=head2 array
 
- Title   : template
- Usage   : $affy->template($template);
-           $affy->template();
+ Title   : array
+ Usage   : $affy->array($template);
+           $affy->array();
  Comments: You probably should not be using this method
-           to set the template object.  Use load_template() instead.
- Function: get/set the the template object
- Returns : a Bio::Expression::Microarray::Affymetrix::Template object
- Args    : optional Bio::Expression::Microarray::Affymetrix::Template object
+           to set the array template object.  Use load_array() instead.
+ Function: get/set the the array template object
+ Returns : a Bio::Expression::Microarray::Affymetrix::Array object
+ Args    : optional Bio::Expression::Microarray::Affymetrix::Array object
 
 =cut
 
-sub template {
+sub array {
   my($self,$val) = @_;
-  $self->{template} = $val if $val;
-  return $self->{template};
+  $self->{array} = $val if $val;
+  return $self->{array};
 }
 
-=head2 load_template
+=head2 load_array
 
- Title   : load_template
- Usage   : $affy->load_template($template);
-           $affy->load_template();
- Function: cause a Bio::Expression::Microarray::Affymetrix::Template
+ Title   : load_array
+ Usage   : $affy->load_array($template);
+           $affy->load_array();
+ Function: cause a Bio::Expression::Microarray::Affymetrix::Array
            object to be created using $affy->templatefile().
- Returns : a  Bio::Expression::Microarray::Affymetrix::Template object
+ Returns : a  Bio::Expression::Microarray::Affymetrix::Array object
  Args    : optional path to a template file, which is stored in
            $affy->templatefile before the Template object is created.
 
 =cut
 
-sub load_template {
+sub load_array {
   my($self,$arg) = @_;
 
   $self->templatefile($arg) if defined $arg;
 
-  my $template = Bio::Expression::Microarray::Affymetrix::Template->new(
-																		-file => $self->templatefile,
-																	   );
-  $self->template($template);
-  return $self->template;
+  my $array = Bio::Expression::Microarray::Affymetrix::Array->new(
+																  -file => $self->templatefile,
+																 );
+  $self->array($array);
+  return $self->array;
 }
 
 =head2 next_array
@@ -211,18 +216,19 @@ sub load_template {
 sub next_array {
   my $self = shift;
 
+  print STDERR "loading data...\n" if $self->verbose;
+
   my $array = new Bio::Expression::Microarray::Affymetrix::Data;
   $array->template($self->template);
 
   my $start = 1;
-  while( defined( $_ = $self->_readline ) ){
-	$_ =~ s/\n/\r\n/gs; #counteract _readline \r-chopping behavior
-
+  while( defined( $_ = $self->_readline(-raw=>1) ) ){
 	#skip to the beginning of the file
 	if($_ =~ m!\[CEL\]!){
 	  if($start == 0){
 		$array = new Bio::Expression::Microarray::Affymetrix::Data;
 		$array->template($self->template);
+		print STDERR "loaded data!\n" if $self->verbose;
 		#return $self->template;
 	  }
 	  $start = 0;
@@ -232,6 +238,8 @@ sub next_array {
 	#slurp up the data
 	$array->load_data($_);
   }
+
+  print STDERR "loaded data!\n" if $self->verbose;
 
   #for the last (or only) file in the input stream
   return $self->template;
@@ -262,9 +270,9 @@ sub write_array {
 	$self->warn(" $array is not MicroarrayI compliant. Dump may fail!");
   }
 
-  $self->_print "[CEL]"       . CRLF . $array->cel       . CRLF;
-  $self->_print "[HEADER]"    . CRLF . $array->header    . CRLF;
-  $self->_print "[INTENSITY]" . CRLF . $array->intensity;
+  $self->_print("[CEL]"       . CRLF . $array->cel       . CRLF);
+  $self->_print("[HEADER]"    . CRLF . $array->header    . CRLF);
+  $self->_print("[INTENSITY]" . CRLF . $array->intensity);
 
   my $i = 0;
   foreach my $x ( @{ $array->matrix } ){
@@ -273,13 +281,13 @@ sub write_array {
 	foreach my $y ( @$x ){
 	  next unless $y;
 	  #$y is a probe object
-	  $self->_print join "\t", (sprintf("%3d",$j),
+	  $self->_print(join "\t", (sprintf("%3d",$j),
 						sprintf("%3d",$i),
 						$$y->value,
 						$$y->standard_deviation,
-						sprintf("%3d",$$y->samples),
-					   );
-	  $self->_print CRLF;
+						sprintf("%3d",$$y->sample_count),
+					   ));
+	  $self->_print(CRLF);
 
 	  push @outliers, [$j,$i] if $$y->is_outlier;
 	  push @modified, [$j,$i] if $$y->is_modified;
@@ -290,23 +298,23 @@ sub write_array {
 	$i++;
   }
 
-  $self->_print CRLF;
+  $self->_print(CRLF);
 
-  $self->_print "[MASKS]" . CRLF . $array->masks;
+  $self->_print("[MASKS]" . CRLF . $array->masks);
   foreach my $mask (@masks){
-	$self->_print $mask->[0], "\t", $mask->[1], CRLF;
+	$self->_print($mask->[0], "\t", $mask->[1], CRLF);
   }
-  $self->_print CRLF;
+  $self->_print(CRLF);
 
-  $self->_print "[OUTLIERS]" . CRLF . $array->outliers;
+  $self->_print("[OUTLIERS]" . CRLF . $array->outliers);
   foreach my $outlier (@outliers){
-	$self->_print $outlier->[0], "\t", $outlier->[1], CRLF;
+	$self->_print($outlier->[0], "\t", $outlier->[1], CRLF);
   }
-  $self->_print CRLF;
+  $self->_print(CRLF);
 
-  $self->_print "[MODIFIED]" . CRLF . $array->modified;
+  $self->_print("[MODIFIED]" . CRLF . $array->modified);
   foreach my $modified (@modified){
-	$self->_print $modified->[0], "\t", $modified->[1], CRLF;
+	$self->_print($modified->[0], "\t", $modified->[1], CRLF);
   }
 }
 

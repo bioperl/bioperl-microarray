@@ -1,5 +1,5 @@
 # $Id$
-# BioPerl module for Bio::Expression::Microarray::Affymetrix::CDF
+# BioPerl module for Bio::Expression::Microarray::Affymetrix::Array
 #
 # Copyright Allen Day <allenday@ucla.edu>, Stan Nelson <snelson@ucla.edu>
 # Human Genetics, UCLA Medical School, University of California, Los Angeles
@@ -8,7 +8,7 @@
 
 =head1 NAME
 
-Bio::Expresssion::Microarray::Affymetrix::Template - Affy Chip Definition File.
+Bio::Expresssion::Microarray::Affymetrix::Array - Affy Chip Template.
 
 =head1 SYNOPSIS
 
@@ -48,13 +48,13 @@ methods. Internal methods are usually preceded with a _
 =cut
 
 # Let the code begin...
-package Bio::Expression::Microarray::Affymetrix::Template;
+package Bio::Expression::Microarray::Affymetrix::Array;
 
 use strict;
 use Bio::Root::Root;
 use Bio::Root::IO;
 use Bio::Expression::Microarray::Probeset;
-use Bio::Expression::Microarray::Probe;
+use Bio::Expression::Microarray::Affymetrix::Probe;
 
 use base qw(Bio::Root::Root Bio::Root::IO);
 use vars qw($DEBUG);
@@ -62,7 +62,11 @@ use enum qw(:QC_ X Y PROBE PLEN ATOM INDEX MATCH BG);
 use enum qw(:UNIT_ X Y PROBE FEAT QUAL EXPOS POS CBASE PBASE TBASE ATOM INDEX CODONIND CODON REGIONTYPE REGION);
 
 use Class::MakeMethods::Emulator::MethodMaker
-  get_set       => [ qw(cel header modified intensity masks outliers modified heavy) ],
+  get_set       => [ qw(
+						cel header modified intensity masks outliers modified heavy
+						algorithm algorith_parameters name date type
+					   )
+				   ],
   new_with_init => 'new',
 ;
 
@@ -143,7 +147,7 @@ sub load_cdf {
 	chomp;
 	next unless $_;
 
-print STDERR "$mode\r";
+	print STDERR "$mode\r" if $DEBUG;
 
     my($key,$value) = (undef,undef);
     if(my($try) = /^\[(.+)\]/){
@@ -186,7 +190,7 @@ print STDERR "$mode\r";
                   $probeparams{index} = 	$attrs[QC_INDEX];
           }
 
-	  my $probe = Bio::Expression::Microarray::Probe->new( %probeparams );
+	  my $probe = Bio::Expression::Microarray::Affymetrix::Probe->new( %probeparams );
 	  $self->matrix($attrs[UNIT_X],$attrs[UNIT_Y],\$probe);
 	  $probeset->add_probe($probe);
     }
@@ -231,7 +235,7 @@ print STDERR "$mode\r";
 		$probeparams{region} = 		$attrs[UNIT_REGION];
       }
 
-      my $probe = Bio::Expression::Microarray::Probe->new( %probeparams );
+      my $probe = Bio::Expression::Microarray::Affymetrix::Probe->new( %probeparams );
 	  $probeset->add_probe($probe);
 
 	  $self->matrix($attrs[UNIT_X],$attrs[UNIT_Y],\$probe);
