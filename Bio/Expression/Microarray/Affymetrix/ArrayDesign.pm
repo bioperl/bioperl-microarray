@@ -144,7 +144,7 @@ Returns : a Bio::Expression::FeatureSet object
 
 =cut
 
-sub qcfeaturegroup {
+sub qc_featuregroup {
   my($self,$arg) = @_;
   return $self->{qcfeaturegroup}->{$arg} if $self->{qcfeaturegroup}->{$arg};
   $self->{qcfeaturegroup}->{$arg} = Bio::Expression::FeatureSet->new()

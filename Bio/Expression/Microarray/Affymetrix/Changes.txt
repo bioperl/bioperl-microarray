@@ -1,0 +1,38 @@
+In order to follow MAGE naming conventions and also clean up/clarify some 
+of the Bioperl-Microarray modules, 
+
+the following changes were made:
+Modules are now all documented! 
+
+Changes to Bio::Expression::Microarray::MicroarrayIO
+----------------------------------------------------
+Module naming (affymetrix.pm, dchipxls.pm mas50txt.pm) and their 
+interfaces remain the same. 
+However the internals have been modified to reflect changes in the Affy 
+Array module changes that are 
+
+detailed below.
+
+
+Changes to Bio::Expression::Microarray::Affymetrix:: modules
+------------------------------------------------------------
+
+Array.pm renamed to ArrayDesign.pm
+
+Data.pm renamed to CelArray.pm
+
+Feature.pm unchanged
+
+Mas50Data.pm renamed Mas50TxtArray.pm
+
+dChipXLS.pm renamed dChipArray.pm
+
+IN ALL above modules where appropriate:
+Method Changes 
+	featureset renamed featuregroup
+	each_featureset renamed each_featuregroup
+	qc_featureset renamed qc_featuregroup
+	each_qcfeaturegroup renamed each_qcfeaturegroup
+
+
+Send any comments or questions to allenday@ucla.edu and crsto@ucla.edu.
