@@ -59,7 +59,7 @@ use Class::MakeMethods::Template::Flyweight
 				length value standard_deviation sample_count
                                 display_id
 
-                                x y is_match is_masked is_outlier is_modified
+                                x y is_match is_masked is_outlier is_modified is_singleton
 			   )
 			],
   new => 'new',

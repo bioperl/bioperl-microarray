@@ -75,7 +75,7 @@ sub load_data {
   my($key,$value) = (undef,undef);
   if(my($try) = $line =~ /^\[(.+)\]/){
 	$self->mode($try);
-	next;
+	return;
   }
 
   ($key,$value) = $line =~ /^(.+?)=(.+)$/;
@@ -94,7 +94,7 @@ sub load_data {
   elsif($self->mode eq 'INTENSITY'){
 	if($key){
 	  $self->array->intensity($self->array->intensity . $line);
-	  next;
+	  return;
 	}
 	
 	$line =~ s/\s*(.+)\s*/$1/; #clean up spaces;
@@ -102,7 +102,7 @@ sub load_data {
 	
 	print STDERR sprintf("%-60s\r",sprintf("%3d %3d is %4.1f",$row[0],$row[1],$row[2])) if $DEBUG;
 	
-	next unless defined $row[1] and defined $row[2];
+	return unless defined $row[1] and defined $row[2];
 	my $feature = $self->array->matrix($row[0],$row[1]);
 	
 	if(defined $feature){
@@ -122,6 +122,7 @@ sub load_data {
 																	   x => $row[0],
 																	   y => $row[1]
 																	  );
+	  $feature->is_singleton(1);
 	  $self->array->matrix($row[0],$row[1],\$feature);
 	  $feature->value($row[2]);
 	  $feature->standard_deviation($row[3]);
@@ -129,22 +130,22 @@ sub load_data {
 	}
   }
   elsif($self->mode eq 'MASKS'){
-	$self->array->masks($self->array->masks . $line) and next if $key;
+	$self->array->masks($self->array->masks . $line) and return if $key;
 
 	my @row = split /\t/, $line;
+	return if $row[0] == 0 and $row[1] == 0;              # WHY???
 	my $feature = $self->array->matrix($row[0],$row[1]);
-	next if $row[0] == 0 and $row[1] == 0; #why do i need to do this?
 	$$feature->is_masked(1);
   }
   elsif($self->mode eq 'OUTLIERS'){
-	$self->array->outliers($self->array->outliers . $line) and next if $key;
+	$self->array->outliers($self->array->outliers . $line) and return if $key;
 	
 	my @row = split /\t/, $line;
 	my $feature = $self->array->matrix($row[0],$row[1]);	
 	$$feature->is_outlier(1);
   }
   elsif($self->mode eq 'MODIFIED'){
-	$self->array->modified($self->array->modified . $line) and next if $key;
+	$self->array->modified($self->array->modified . $line) and return if $key;
 	
 	my @row = split /\t/, $line;
 	my $feature = $self->array->matrix($row[0],$row[1]);
