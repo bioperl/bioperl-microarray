@@ -18,7 +18,6 @@ Bio/Expression/MicroarrayIO/dchipxls.pm
 Bio/Expression/MicroarrayIO/mas50txt.pm
 MANIFEST
 Makefile.PL
-eg/1.CEL
 eg/133a.cdf
 eg/133a.cel
 eg/133a.txt
