@@ -64,8 +64,8 @@ package Bio::Expression::MicroarrayIO::affymetrix;
 use strict;
 use Bio::Root::Root;
 use Bio::Expression::MicroarrayIO;
-use Bio::Expression::Microarray::Affymetrix::Data;
-use Bio::Expression::Microarray::Affymetrix::Array;
+use Bio::Expression::Microarray::Affymetrix::CelArray;
+use Bio::Expression::Microarray::Affymetrix::ArrayDesign;
 use IO::File;
 
 use base qw(Bio::Root::Root Bio::Expression::MicroarrayIO);
@@ -99,7 +99,7 @@ sub new {
 
 =head2 _initialize
 
- Title   : new
+ Title   : _initialize
  Usage   : $affy->_initialize(
 							  -file     => 'path/to/filename',
 							  -template => 'path/to/template'
@@ -177,8 +177,8 @@ sub datafile {
  Comments: You probably should not be using this method
            to set the array template object.  Use load_array() instead.
  Function: get/set the the array template object
- Returns : a Bio::Expression::Microarray::Affymetrix::Array object
- Args    : optional Bio::Expression::Microarray::Affymetrix::Array object
+ Returns : a Bio::Expression::Microarray::Affymetrix::ArrayDesign object
+ Args    : optional Bio::Expression::Microarray::Affymetrix::ArrayDesign object
 
 =cut
 
@@ -193,9 +193,9 @@ sub array {
  Title   : load_array
  Usage   : $affy->load_array($template);
            $affy->load_array();
- Function: cause a Bio::Expression::Microarray::Affymetrix::Array
+ Function: cause a Bio::Expression::Microarray::Affymetrix::ArrayDesign
            object to be created using $affy->templatefile().
- Returns : a  Bio::Expression::Microarray::Affymetrix::Array object
+ Returns : a  Bio::Expression::Microarray::Affymetrix::ArrayDesign object
  Args    : optional path to a template file, which is stored in
            $affy->templatefile before the Template object is created.
 
@@ -206,7 +206,7 @@ sub load_array {
 
   $self->templatefile($arg) if defined $arg;
 
-  my $array = Bio::Expression::Microarray::Affymetrix::Array->new(
+  my $array = Bio::Expression::Microarray::Affymetrix::ArrayDesign->new(
 #				  -file => $self->templatefile,
 																 );
 
@@ -225,9 +225,8 @@ sub load_array {
  Title   : next_array
  Usage   : $affy->next_array();
  Function: reads an Affymetrix data record from $affy->datafile
- Returns : a  Bio::Expression::Microarray::Affymetrix::Template object
-           that has been filled with probe values.
- Args    :
+ Returns : a loaded array object
+ Args    : none
 
 =cut
 
@@ -237,7 +236,7 @@ sub next_array {
   print STDERR "loading data...\n" if $self->verbose;
 
   #create an object for parsing the array data;
-  my $data = new Bio::Expression::Microarray::Affymetrix::Data;
+  my $data = new Bio::Expression::Microarray::Affymetrix::CelArray;
 
   $self->array->clear_cel();
   $self->array->clear_header();
