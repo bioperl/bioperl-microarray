@@ -25,3 +25,5 @@ eg/133a.txt
 eg/133a.xls
 eg/GenePix_Pro_3.0.6.89.gpr
 t/affy_u133a_cel.t
+t/affy_u133a_txt.t
+

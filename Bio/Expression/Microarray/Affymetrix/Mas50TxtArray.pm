@@ -108,7 +108,7 @@ sub featuregroup {
  Title   : each_featuregroup
  Usage   : @featuregroups = $array->each_featuregroup();
  Function: iterated through FeatureGroup objects
-Returns : a list of Bio::Expression::FeatureGroup::FeatureGroupMas50 object
+ Returns : a list of Bio::Expression::FeatureGroup::FeatureGroupMas50 object
  Args    : none
 
 =cut
@@ -116,10 +116,23 @@ Returns : a list of Bio::Expression::FeatureGroup::FeatureGroupMas50 object
 sub each_featuregroup {
   my $self = shift;
   my @return = ();
-  foreach my $p (sort keys %{$self->{featuregroup}}) {
-	push @return, $self->{featuregroup}->{$p};
+  foreach my $p (sort keys %{$self->{featuregroup}}){
+        push @return, $self->{featuregroup}->{$p};
   }
   return @return;
+}
+
+
+=head2 each_qcfeaturegroup
+
+ Title   : each_qcfeaturegroup
+ Caveat  : this method cannot be called for a MAS 5.0 TXT file, as the information
+           about which probesets are QC and which are not is not present.
+
+=cut
+
+sub each_qcfeaturegroup {
+  shift->throw("each_qcfeaturegroup cannot be called for a MAS 5.0 TXT file");  
 }
 
 =head2 load_data
