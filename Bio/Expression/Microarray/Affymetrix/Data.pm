@@ -138,21 +138,21 @@ sub load_data {
 	my @row = split /\t/, $line;
 	return if $row[0] == 0 and $row[1] == 0;		# WHY???
 	my $feature = $self->array->matrix($row[0],$row[1]);
-	$$feature->is_masked(1) if ref($$feature);		# WHY???
+	$$feature->is_masked(1) if ref($feature);		# WHY???
   }
   elsif($self->mode eq 'OUTLIERS'){
 	$self->array->outliers($self->array->outliers . $line) and return if $key;
 	
 	my @row = split /\t/, $line;
 	my $feature = $self->array->matrix($row[0],$row[1]);	
-	$$feature->is_outlier(1) if ref($$feature);		# WHY???
+	$$feature->is_outlier(1) if ref($feature);		# WHY???
   }
   elsif($self->mode eq 'MODIFIED'){
 	$self->array->modified($self->array->modified . $line) and return if $key;
 	
 	my @row = split /\t/, $line;
 	my $feature = $self->array->matrix($row[0],$row[1]);
-	$$feature->is_modified(1) if ref($$feature);		# WHY???
+	$$feature->is_modified(1) if ref($feature);		# WHY???
   }
 }
 

@@ -50,7 +50,7 @@ ok 6;
 my $array = $affx->next_array;
 ok 7;
 
-my $out = Bio::Expression::MicroarrayIO->new(-file => '>./3.CEL', -format => 'affymetrix');
+my $out = Bio::Expression::MicroarrayIO->new(-file => '>./eg/3.CEL', -format => 'affymetrix');
 ok 8;
 $out->write_array($array);
 ok 9;

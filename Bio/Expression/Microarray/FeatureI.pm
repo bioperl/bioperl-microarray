@@ -67,8 +67,8 @@ The following methods can be used to set or retrieve an attribute
 for a feature object.  Call them as in (a) to set an attribute, or
 as in (b) to retrieve the value of an attribute:
 
- (a) $ftr->method();
- (b) $ftr->method('new_value');
+ (a) $ftr->method('new_value');
+ (b) $ftr->method();
 
 Note that no attempt is made to validate the values you store
 using an accessor method.

@@ -141,7 +141,6 @@ use base qw(Bio::Root::Root Bio::Root::IO);
 sub new {
     my ($caller,@args) = @_;
     my $class = ref($caller) || $caller;
-
     if( $class =~ /Bio::Expression::MicroarrayIO::(\S+)/ ) {
 	  my ($self) = $class->SUPER::new(@args);	
 	  $self->_initialize(@args);
