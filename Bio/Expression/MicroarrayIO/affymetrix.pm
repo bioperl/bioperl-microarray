@@ -58,7 +58,7 @@ use Bio::Expression::Microarray::Affymetrix::Array;
 use IO::File;
 
 use base qw(Bio::Root::Root Bio::Expression::MicroarrayIO);
-use vars qw($DEBUG);
+use vars qw($DEBUG $started);
 
 use constant CRLF => "\015\012";
 
@@ -218,30 +218,34 @@ sub next_array {
 
   print STDERR "loading data...\n" if $self->verbose;
 
+  #create an object for parsing the array data;
   my $data = new Bio::Expression::Microarray::Affymetrix::Data;
-  $data->array($self->array);
 
-  my $start = 1;
   while( defined( $_ = $self->_readline(-raw=>1) ) ){
-	#skip to the beginning of the file
+	#if we see the beginning of a new file
 	if($_ =~ m!\[CEL\]!){
-	  if($start == 0){
-		$data = new Bio::Expression::Microarray::Affymetrix::Data;
-		$data->template($self->array);
-		print STDERR "loaded data!\n" if $self->verbose;
-		#return $self->template;
-	  }
-	  $start = 0;
-	}
-	next if $start;
+	  print STDERR "new CEL\n" if $self->verbose;
+	  $data->array($self->array);
 
-	#slurp up the data
+	  #if we have seen another CEL before, _pushback() the beginning
+	  #of this new CEL, for the next call to next_array() to handle,
+	  #and return the preceding CEL.
+	  if($started){
+		$self->_pushback($_);
+		undef $started;
+		return $self->array;
+	  }
+	  $started = 1;
+	}
+	next unless $started;
+
+	#slurp up the data, line by line
 	$data->load_data($_);
   }
 
   print STDERR "loaded data!\n" if $self->verbose;
 
-  #for the last (or only) file in the input stream
+  #and return the array object, complete with loaded data!
   return $self->array;
 }
 
