@@ -53,7 +53,7 @@ package Bio::Expression::Microarray::Affymetrix::Data;
 use strict;
 use Bio::Root::Root;
 use Bio::Root::IO;
-use Bio::Expression::Microarray::Affymetrix::Probe;
+use Bio::Expression::Microarray::Affymetrix::Feature;
 use IO::File;
 
 use base qw(Bio::Root::Root Bio::Root::IO);
@@ -98,21 +98,21 @@ sub load_data {
 	print STDERR sprintf("%-60s\r",sprintf("%3d %3d is %4.1f",$row[0],$row[1],$row[2])) if $DEBUG;
 	
 	next unless defined $row[1] and defined $row[2];
-	my $probe = $self->array->matrix($row[0],$row[1]);
+	my $feature = $self->array->matrix($row[0],$row[1]);
 	
-	if(defined $probe){
-	  $$probe->value($row[2]);
-	  $$probe->standard_deviation($row[3]);
-	  $$probe->sample_count($row[4]);
+	if(defined $feature){
+	  $$feature->value($row[2]);
+	  $$feature->standard_deviation($row[3]);
+	  $$feature->sample_count($row[4]);
 	} else {
-	  $probe = Bio::Expression::Microarray::Affymetrix::Probe->new(
+	  $feature = Bio::Expression::Microarray::Affymetrix::Feature->new(
 													   x =>	$row[0],
 													   y =>	$row[1],
 													  );
-	  $self->array->matrix($row[0],$row[1],\$probe);
-	  $probe->value($row[2]);
-	  $probe->standard_deviation($row[3]);
-	  $probe->sample_count($row[4]);
+	  $self->array->matrix($row[0],$row[1],\$feature);
+	  $feature->value($row[2]);
+	  $feature->standard_deviation($row[3]);
+	  $feature->sample_count($row[4]);
 	}
   }
   elsif($self->mode eq 'MASKS'){
@@ -121,19 +121,19 @@ sub load_data {
 	my @row = split /\t/, $line;
 	next unless @row;
 
-	my $probe = $self->array->matrix($row[0],$row[1]);
+	my $feature = $self->array->matrix($row[0],$row[1]);
 
-	if(defined $probe){
+	if(defined $feature){
 	  next if $row[0] == 0 and $row[1] == 0; #why do i need to do this?
 
-	  $$probe->is_masked(1);
+	  $$feature->is_masked(1);
 	} else {
-	  $probe = Bio::Expression::Microarray::Affymetrix::Probe->new(
+	  $feature = Bio::Expression::Microarray::Affymetrix::Feature->new(
 													   x =>	$row[0],
 													   y =>	$row[1],
 													  );
-	  $self->array->matrix($row[0],$row[1],\$probe);
-	  $probe->is_masked(1);
+	  $self->array->matrix($row[0],$row[1],\$feature);
+	  $feature->is_masked(1);
 	}
   }
   elsif($self->mode eq 'OUTLIERS'){
@@ -141,34 +141,34 @@ sub load_data {
 	
 	my @row = split /\t/, $line;
 	
-	my $probe = $self->array->matrix($row[0],$row[1]);
+	my $feature = $self->array->matrix($row[0],$row[1]);
 	
-	if(defined $probe){
-	  $$probe->is_outlier(1);
+	if(defined $feature){
+	  $$feature->is_outlier(1);
 	} else {
-	  $probe = Bio::Expression::Microarray::Affymetrix::Probe->new(
+	  $feature = Bio::Expression::Microarray::Affymetrix::Feature->new(
 													   x =>	$row[0],
 													   y =>	$row[1],
 													  );
-	  $self->array->matrix($row[0],$row[1],\$probe);
-	  $probe->is_outlier(1) and next;
+	  $self->array->matrix($row[0],$row[1],\$feature);
+	  $feature->is_outlier(1) and next;
 	}
   }
   elsif($self->mode eq 'MODIFIED'){
 	$self->array->modified($self->array->modified . $line) and next if $key;
 	
 	my @row = split /\t/, $line;
-	my $probe = $self->array->matrix($row[0],$row[1]);
+	my $feature = $self->array->matrix($row[0],$row[1]);
 	
-	if(defined $probe){
-	  $$probe->is_modified(1);
+	if(defined $feature){
+	  $$feature->is_modified(1);
 	} else {
-	  $probe = Bio::Expression::Microarray::Affymetrix::Probe->new(
+	  $feature = Bio::Expression::Microarray::Affymetrix::Feature->new(
 													   x =>	$row[0],
 													   y =>	$row[1],
 													  );
-	  $self->array->matrix($row[0],$row[1],\$probe);
-	  $probe->is_modified(1) and next;
+	  $self->array->matrix($row[0],$row[1],\$feature);
+	  $feature->is_modified(1) and next;
 	}
   }
 }

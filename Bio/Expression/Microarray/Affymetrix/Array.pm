@@ -1,5 +1,5 @@
 # $Id$
-# BioPerl module for Bio::Expression::Microarray::Affymetrix::Array
+# BioPerl module for Bio::Expression::Affymetrix::Array
 #
 # Copyright Allen Day <allenday@ucla.edu>, Stan Nelson <snelson@ucla.edu>
 # Human Genetics, UCLA Medical School, University of California, Los Angeles
@@ -8,7 +8,7 @@
 
 =head1 NAME
 
-Bio::Expresssion::Microarray::Affymetrix::Array - Affy Chip Template.
+Bio::Expresssion::Affymetrix::Array - Affy Chip Template.
 
 =head1 SYNOPSIS
 
@@ -53,8 +53,8 @@ package Bio::Expression::Microarray::Affymetrix::Array;
 use strict;
 use Bio::Root::Root;
 use Bio::Root::IO;
-use Bio::Expression::Microarray::Probeset;
-use Bio::Expression::Microarray::Affymetrix::Probe;
+use Bio::Expression::FeatureSet;
+use Bio::Expression::Microarray::Affymetrix::Feature;
 
 use base qw(Bio::Root::Root Bio::Root::IO);
 use vars qw($DEBUG);
@@ -95,36 +95,36 @@ sub matrix {
   return $self->{matrix}->[ $args[1] ][ $args[0] ];
 }
 
-sub probeset {
+sub featureset {
   my($self,$arg) = @_;
-  return $self->{probeset}->{$arg} if $self->{probeset}->{$arg};
-  $self->{probeset}->{$arg} = Bio::Expression::Microarray::Probeset->new()
-	or $self->throw("Couldn't create a Bio::Expression::Microarray::Probeset: $!");
-  return $self->{probeset}->{$arg};
+  return $self->{featureset}->{$arg} if $self->{featureset}->{$arg};
+  $self->{featureset}->{$arg} = Bio::Expression::FeatureSet->new()
+	or $self->throw("Couldn't create a Bio::Expression::FeatureSet: $!");
+  return $self->{featureset}->{$arg};
 }
 
-sub qcprobeset {
+sub qcfeatureset {
   my($self,$arg) = @_;
-  return $self->{qcprobeset}->{$arg} if $self->{qcprobeset}->{$arg};
-  $self->{qcprobeset}->{$arg} = Bio::Expression::Microarray::Probeset->new()
-	or $self->throw("Couldn't create a Bio::Expression::Microarray::Probeset: $!");
-  return $self->{qcprobeset}->{$arg};
+  return $self->{qcfeatureset}->{$arg} if $self->{qcfeatureset}->{$arg};
+  $self->{qcfeatureset}->{$arg} = Bio::Expression::FeatureSet->new()
+	or $self->throw("Couldn't create a Bio::Expression::FeatureSet: $!");
+  return $self->{qcfeatureset}->{$arg};
 }
 
-sub each_probeset {
+sub each_featureset {
   my $self = shift;
   my @return = ();
-  foreach my $p (sort keys %{$self->{probeset}}){
-	push @return, $self->{probeset}->{$p};
+  foreach my $p (sort keys %{$self->{featureset}}){
+	push @return, $self->{featureset}->{$p};
   }
   return @return;
 }
 
-sub each_qcprobeset {
+sub each_qcfeatureset {
   my $self = shift;
   my @return = ();
-  foreach my $p (sort keys %{$self->{qcprobeset}}){
-	push @return, $self->{qcprobeset}->{$p};
+  foreach my $p (sort keys %{$self->{qcfeatureset}}){
+	push @return, $self->{qcfeatureset}->{$p};
   }
   return @return;
 }
@@ -133,7 +133,7 @@ sub load_cdf {
   my($self,@args) = @_;
   my($tfh);
 
-  my %unit_name = (); #map unit blocks to probe names
+  my %unit_name = (); #map unit blocks to feature names
 
   if( $self->use_tempfile ) {
 	$tfh = $self->tempfile() or self->throw("Unable to open tempfile: $!");
@@ -167,78 +167,78 @@ sub load_cdf {
     elsif($mode =~ /^QC/){
       next if /^CellHeader/;
 
-      my $probeset = $self->qcprobeset($mode);
+      my $featureset = $self->qcfeatureset($mode);
 
       my($type) = $_ =~ /Type=(.+)/;
 
-      $probeset->type($type) and next if $type;
-      $probeset->id($mode) if $mode;
+      $featureset->type($type) and next if $type;
+      $featureset->id($mode) if $mode;
 
-      my($probe,$attrs) = $_ =~ /Cell(\d+)=(.+)/;
+      my($feature,$attrs) = $_ =~ /Cell(\d+)=(.+)/;
 	  next unless $attrs;
       my @attrs = split /\t/, $attrs;
 
-	  my %probeparams = (
+	  my %featureparams = (
 						 x		=>	$attrs[QC_X],
 						 y		=>	$attrs[QC_Y],
 						);
 
 	  if($self->heavy){
-		$probeparams{probe} = 	$attrs[QC_PROBE];
-		$probeparams{length} = 	$attrs[QC_PLEN];
-		$probeparams{atom} = 		$attrs[QC_ATOM];
-		$probeparams{index} = 	$attrs[QC_INDEX];
+		$featureparams{probe}  = 	$attrs[QC_PROBE];
+		$featureparams{length} = 	$attrs[QC_PLEN];
+		$featureparams{atom}   = 	$attrs[QC_ATOM];
+		$featureparams{index}  = 	$attrs[QC_INDEX];
 	  }
 
-	  my $probe = Bio::Expression::Microarray::Affymetrix::Probe->new( %probeparams );
-	  $self->matrix($attrs[UNIT_X],$attrs[UNIT_Y],\$probe);
-	  $probeset->add_probe($probe);
+	  my $feature = Bio::Expression::Microarray::Affymetrix::Feature->new( %featureparams );
+	  $self->matrix($attrs[UNIT_X],$attrs[UNIT_Y],\$feature);
+	  $featureset->add_feature($feature);
     }
     elsif($mode =~ /^Unit(\d+)_Block/){
       next if /^Block|Num|Start|Stop|CellHeader/;
 
-	  my $probeset;
+	  my $featureset;
 
 	  my($name) = $_ =~ /^Name=(.+)/;
 	  if($name){
-		$probeset = $self->probeset($name);
-		$probeset->id($name);
+		$featureset = $self->featureset($name);
+		$featureset->id($name);
 		$current{name} = $name;
 		next;
 	  } else {
-		$probeset = $self->probeset($current{name});
+		$featureset = $self->featureset($current{name});
 	  }
 
-      my($probe,$attrs) = $_ =~ /Cell(\d+)=(.+)/;
+      my($feature,$attrs) = $_ =~ /Cell(\d+)=(.+)/;
       my @attrs = split /\t/, $attrs;
 
-      my %probeparams = (
+      my %featureparams = (
 	   x        =>	$attrs[UNIT_X],
-	   name     =>	$attrs[UNIT_QUAL],
+	   id       =>	$attrs[UNIT_QUAL],
 	   y	    =>	$attrs[UNIT_Y],
 	   is_match =>  $attrs[UNIT_CBASE] eq $attrs[UNIT_PBASE] ? 1 : 0,
       );
 
       if($self->heavy){
-		$probeparams{probe} = 		$attrs[UNIT_PROBE];
-		$probeparams{feat} = 		$attrs[UNIT_FEAT];
-		$probeparams{expos} = 		$attrs[UNIT_EXPOS];
-		$probeparams{pos} = 		$attrs[UNIT_POS];
-		$probeparams{cbase} = 		$attrs[UNIT_CBASE];
-		$probeparams{pbase} = 		$attrs[UNIT_PBASE];
-		$probeparams{tbase} = 		$attrs[UNIT_TBASE];
-		$probeparams{atom} = 		$attrs[UNIT_ATOM];
-		$probeparams{index} = 		$attrs[UNIT_INDEX];
-		$probeparams{codon_index} = $attrs[UNIT_CODONIND];
-		$probeparams{codon} = 		$attrs[UNIT_CODON];
-		$probeparams{regiontype} = 	$attrs[UNIT_REGIONTYPE];
-		$probeparams{region} = 		$attrs[UNIT_REGION];
+		$featureparams{probe}		= 	$attrs[UNIT_PROBE];
+		$featureparams{feat}		= 	$attrs[UNIT_FEAT];
+		$featureparams{expos}		= 	$attrs[UNIT_EXPOS];
+		$featureparams{pos}		= 	$attrs[UNIT_POS];
+		$featureparams{cbase}		= 	$attrs[UNIT_CBASE];
+		$featureparams{pbase}		= 	$attrs[UNIT_PBASE];
+		$featureparams{tbase}		= 	$attrs[UNIT_TBASE];
+		$featureparams{atom}		= 	$attrs[UNIT_ATOM];
+		$featureparams{index}		= 	$attrs[UNIT_INDEX];
+		$featureparams{codon_index}	= 	$attrs[UNIT_CODONIND];
+		$featureparams{codon}		= 	$attrs[UNIT_CODON];
+		$featureparams{regiontype}	= 	$attrs[UNIT_REGIONTYPE];
+		$featureparams{region}		= 	$attrs[UNIT_REGION];
       }
 
-      my $probe = Bio::Expression::Microarray::Affymetrix::Probe->new( %probeparams );
-	  $probeset->add_probe($probe);
+      my $feature = Bio::Expression::Microarray::Affymetrix::Feature->new( %featureparams );
+	  $featureset->add_feature($feature);
 
-	  $self->matrix($attrs[UNIT_X],$attrs[UNIT_Y],\$probe);
+	  $self->matrix($attrs[UNIT_X],$attrs[UNIT_Y],\$feature);
     }
     elsif($mode =~ /^Unit(\d+)/){
       #not sure what should be done with these... they seem extraneous
