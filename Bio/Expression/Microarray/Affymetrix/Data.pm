@@ -12,7 +12,7 @@ Bio::Expression::Microarray::Affymetrix::Data - Affymetrix CEL file.
 
 =head1 SYNOPSIS
 
-You shouldn't be using this module directly.  Try
+You should not be using this module directly.  Try
 Bio::Expression::MicroarrayIO instead.
 
 =head1 DESCRIPTION
@@ -110,10 +110,18 @@ sub load_data {
 	  $$feature->standard_deviation($row[3]);
 	  $$feature->sample_count($row[4]);
 	} else {
+	  #warn "$row[0] $row[1] INTENSITY" if $DEBUG;
+
+	  #There are some spots on the array (CEL file) that do not have
+	  #a corresponding entry in the CDF file.  It is assumed that these
+	  #are quality control features of some sort.  We opt to create feature
+	  #objects for them, because their values are necessary to recreate a
+	  #CEL file.
+
 	  $feature = Bio::Expression::Microarray::Affymetrix::Feature->new(
-													   x =>	$row[0],
-													   y =>	$row[1],
-													  );
+																	   x => $row[0],
+																	   y => $row[1]
+																	  );
 	  $self->array->matrix($row[0],$row[1],\$feature);
 	  $feature->value($row[2]);
 	  $feature->standard_deviation($row[3]);
@@ -124,57 +132,23 @@ sub load_data {
 	$self->array->masks($self->array->masks . $line) and next if $key;
 
 	my @row = split /\t/, $line;
-	next unless @row;
-
 	my $feature = $self->array->matrix($row[0],$row[1]);
-
-	if(defined $feature){
-	  next if $row[0] == 0 and $row[1] == 0; #why do i need to do this?
-
-	  $$feature->is_masked(1);
-	} else {
-	  $feature = Bio::Expression::Microarray::Affymetrix::Feature->new(
-													   x =>	$row[0],
-													   y =>	$row[1],
-													  );
-	  $self->array->matrix($row[0],$row[1],\$feature);
-	  $feature->is_masked(1);
-	}
+	next if $row[0] == 0 and $row[1] == 0; #why do i need to do this?
+	$$feature->is_masked(1);
   }
   elsif($self->mode eq 'OUTLIERS'){
 	$self->array->outliers($self->array->outliers . $line) and next if $key;
 	
 	my @row = split /\t/, $line;
-	
-	my $feature = $self->array->matrix($row[0],$row[1]);
-	
-	if(defined $feature){
-	  $$feature->is_outlier(1);
-	} else {
-	  $feature = Bio::Expression::Microarray::Affymetrix::Feature->new(
-													   x =>	$row[0],
-													   y =>	$row[1],
-													  );
-	  $self->array->matrix($row[0],$row[1],\$feature);
-	  $feature->is_outlier(1) and next;
-	}
+	my $feature = $self->array->matrix($row[0],$row[1]);	
+	$$feature->is_outlier(1);
   }
   elsif($self->mode eq 'MODIFIED'){
 	$self->array->modified($self->array->modified . $line) and next if $key;
 	
 	my @row = split /\t/, $line;
 	my $feature = $self->array->matrix($row[0],$row[1]);
-	
-	if(defined $feature){
-	  $$feature->is_modified(1);
-	} else {
-	  $feature = Bio::Expression::Microarray::Affymetrix::Feature->new(
-													   x =>	$row[0],
-													   y =>	$row[1],
-													  );
-	  $self->array->matrix($row[0],$row[1],\$feature);
-	  $feature->is_modified(1) and next;
-	}
+	$$feature->is_modified(1);
   }
 }
 
