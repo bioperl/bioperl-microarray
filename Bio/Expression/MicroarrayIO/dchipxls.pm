@@ -93,7 +93,6 @@ sub new {
     my $class = ref($caller) || $caller;
 
     my $self = bless {}, $class;
-
     $self->_initialize(@args);
     return $self;
 }
@@ -125,7 +124,8 @@ sub _initialize{
   my %param = @args;
   @param{ map { lc $_ } keys %param } = values %param; # lowercase keys
 
-  if($self->mode eq 'r'){
+  if($param{-file} or $param{-fh}){
+#  if($self->mode eq 'r'){
 	print STDERR "loading array template and data...\n" if $self->verbose;
 
 	$self->datafile($param{-file});
@@ -165,7 +165,7 @@ sub next_array {
   print STDERR "loading data...\n" if $self->verbose;
 
   #create an object for parsing the array data;
-  my $array = new Bio::Expression::Microarray::Affymetrix::dChipXLS;
+  my $array = Bio::Expression::Microarray::Affymetrix::dChipArray->new;
 
   while ( defined( $_ = $self->_readline(-raw=>1) ) ) {
 	#if we see the beginning of a new file

@@ -124,7 +124,8 @@ sub _initialize{
   my %param = @args;
   @param{ map { lc $_ } keys %param } = values %param; # lowercase keys
 
-  if($self->mode eq 'r'){
+  if($param{-file} or $param{-fh}){
+#  if($self->mode eq 'r'){
 	print STDERR "loading array template and data...\n" if $self->verbose;
 
 	$self->datafile($param{-file});
