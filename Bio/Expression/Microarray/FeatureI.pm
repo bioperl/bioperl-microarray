@@ -13,12 +13,17 @@ features
 
 =head1 SYNOPSIS
 
+...
+
 =head1 DESCRIPTION
 
-Bio::Expression::Microarray::FeatureI is an extension of
-Bio::Expression::FeatureI, with methods specific to microarray features.
+Bio::Expression::Microarray::FeatureI is derived from
+Bio::Expression::FeatureI, with methods specific to microarray
+features.
 
 =head1 FEEDBACK
+
+Direct feedback to E<lt>allenday@ucla.eduE<gt> or to the Bioperl mailing list (see below).
 
 =head2 Mailing Lists
 

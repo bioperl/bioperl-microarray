@@ -33,9 +33,9 @@ use Bio::Expression::Microarray::Affymetrix::Array;
 ok 1;
 use Bio::Expression::Microarray::Affymetrix::Data;
 ok 2;
-Bio::Expression::Microarray::Affymetrix::Array::DEBUG = 1;
+$Bio::Expression::Microarray::Affymetrix::Array::DEBUG = 1;
 ok 3;
-Bio::Expression::Microarray::Affymetrix::Data::DEBUG = 1;
+$Bio::Expression::Microarray::Affymetrix::Data::DEBUG = 1;
 ok 4;
 
 use Bio::Expression::MicroarrayIO;

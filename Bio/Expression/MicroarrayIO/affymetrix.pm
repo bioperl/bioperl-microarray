@@ -14,9 +14,20 @@ array.
 
 =head1 SYNOPSIS
 
+  $stream  = Bio::Expression::MicroarrayIO->new(
+		'-file'     => "my.cel",
+		'-template' => "my.cdf",
+		'-format'   => "affymetrix",
+						);
+
 =head1 DESCRIPTION
 
+Bio::Expression::MicroarrayIO::affymetrix parses Affymetrix CEL files in
+the context of a CDF file.
+
 =head1 FEEDBACK
+
+Direct feedback to E<lt>allenday@ucla.eduE<gt> or to the Bioperl mailing list (see below).
 
 =head2 Mailing Lists
 
@@ -116,7 +127,7 @@ sub _initialize{
   if($self->mode eq 'r'){
 	print STDERR "loading array template and data...\n" if $self->verbose;
 
-	$self->datafile($param{-file}) || $self->throw("no data file provided to new()");
+	$self->datafile($param{-file});
 	$self->templatefile($param{-template});
 	$self->load_array();
 
@@ -222,11 +233,18 @@ sub load_array {
 
 sub next_array {
   my $self = shift;
-
+  $self->array->destroy_features;
   print STDERR "loading data...\n" if $self->verbose;
 
   #create an object for parsing the array data;
   my $data = new Bio::Expression::Microarray::Affymetrix::Data;
+
+  $self->array->clear_cel();
+  $self->array->clear_header();
+  $self->array->clear_modified();
+  $self->array->clear_intensity();
+  $self->array->clear_masks();
+  $self->array->clear_outliers();
 
   while( defined( $_ = $self->_readline(-raw=>1) ) ){
 	#if we see the beginning of a new file
@@ -261,7 +279,7 @@ sub next_array {
  Title   : write_array
  Usage   : $affy->write_array($array);
  Function: write an Affymetrix data record using $array
- Returns : nothing.  prints a lot of text.
+ Returns : nothing.  prints a lot of text to the MicroarrayIO stream.
  Args    : A Bio::Expression::MicroarrayI compliant object.
 
 =cut
@@ -285,17 +303,20 @@ sub write_array {
   $self->_print("[HEADER]"    . CRLF . $array->header    . CRLF);
   $self->_print("[INTENSITY]" . CRLF . $array->intensity);
 
-  my $i = 0;
+  my $i = -1;
   foreach my $x ( @{ $array->matrix } ){
+	$i++;
 	next unless $x;
-	my $j = 0;
+	my $j = 0-1;
 	foreach my $y ( @$x ){
+	  $j++;
 	  next unless $y;
-	  #$y is a probe object
+
+	  #$$y is a probe object
 	  $self->_print(join "\t", (sprintf("%3d",$j),
 						sprintf("%3d",$i),
-						$$y->value,
-						$$y->standard_deviation,
+						sprintf("%.1f",$$y->value),
+						sprintf("%.1f",$$y->standard_deviation),
 						sprintf("%3d",$$y->sample_count),
 					   ));
 	  $self->_print(CRLF);
@@ -304,15 +325,14 @@ sub write_array {
 	  push @modified, [$j,$i] if $$y->is_modified;
 	  push @masks,    [$j,$i] if $$y->is_masked;
 
-	  $j++;
 	}
-	$i++;
   }
 
   $self->_print(CRLF);
 
   $self->_print("[MASKS]" . CRLF . $array->masks);
   foreach my $mask (@masks){
+	next if $mask->[0] == 0 and $mask->[1] == 0;  #WHY ???
 	$self->_print($mask->[0], "\t", $mask->[1], CRLF);
   }
   $self->_print(CRLF);

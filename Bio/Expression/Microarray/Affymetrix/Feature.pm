@@ -12,9 +12,13 @@ Bio::Expression::Microarray::Affymetrix::Feature - an Affymetrix feature.
 
 =head1 SYNOPSIS
 
+ #get a Feature object somehow...
+
 =head1 DESCRIPTION
 
 =head1 FEEDBACK
+
+Direct feedback to E<lt>allenday@ucla.eduE<gt> or to the Bioperl mailing list (see below).
 
 =head2 Mailing Lists
 
@@ -57,9 +61,8 @@ use Class::MakeMethods::Template::Flyweight
 				probe feat expos pos cbase pbase tbase
 				atom index codon_index codon regiontype region
 				length value standard_deviation sample_count
-                                display_id
-
-                                x y is_match is_masked is_outlier is_modified is_singleton
+				display_id
+				x y is_match is_masked is_outlier is_modified is_singleton
 			   )
 			],
   new => 'new',

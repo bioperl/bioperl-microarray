@@ -18,6 +18,8 @@ Bio::Expresssion::Affymetrix::Array - Affy Chip Template.
 
 =head1 FEEDBACK
 
+Direct feedback to E<lt>allenday@ucla.eduE<gt> or to the Bioperl mailing list (see below).
+
 =head2 Mailing Lists
 
 User feedback is an integral part of the evolution of this and other
@@ -62,9 +64,9 @@ use enum qw(:UNIT_ X Y PROBE FEAT QUAL EXPOS POS CBASE PBASE TBASE ATOM INDEX CO
 
 use Class::MakeMethods::Emulator::MethodMaker
   get_set       => [ qw(
-						cel header modified intensity masks outliers modified heavy
+						cel header modified intensity masks outliers heavy
 						algorithm algorithm_parameters name date type version dat_header
-						mode _temp_name
+						mode _temp_name id
 					   )
 				   ],
   new_with_init => 'new',
@@ -78,7 +80,6 @@ sub init {
   my ($self,@args) = @_;
 
   $self->SUPER::_initialize(@args);
-  my ($usetempfile) = $self->_rearrange([qw(TEMPFILE)],@args);
   $DEBUG = 1 if( ! defined $DEBUG && $self->verbose > 0);
 }
 
@@ -228,6 +229,24 @@ sub load_data {
     }
   elsif($self->mode =~ /^Unit(\d+)/){
 	#not sure what should be done with these... they seem extraneous
+  }
+}
+
+sub DESTROY {
+  my $self = shift;
+  $self->destroy_features();
+}
+
+sub destroy_features {
+  my $self = shift;
+  my $matrix = $self->matrix;
+
+  foreach my $x (@{$self->matrix}){
+    next unless $x;
+    foreach my $y (@{$x}){
+      next unless $y;
+      $$y->_destroy_flyweight_info;
+    }
   }
 }
 

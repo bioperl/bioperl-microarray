@@ -13,7 +13,7 @@
 
 =head1 NAME
 
-Bio::Expression::MicroarrayIO - Handler for Microarray Formats
+Bio::Expression::MicroarrayIO - Read/write Microarray files
 
 =head1 SYNOPSIS
 
@@ -32,7 +32,7 @@ Bio::Expression::MicroarrayIO - Handler for Microarray Formats
 =head1 DESCRIPTION
 
 The Bio::Expression::MicroarrayIO module reads various Microarray
-data formats such as Affymetrix CEL and CDF.
+data formats such as Affymetrix CEL and CDF, and dChip XLS.
 
 =head1 CONSTRUCTORS
 
@@ -42,7 +42,7 @@ data formats such as Affymetrix CEL and CDF.
 		-file     => 'filename',
 		-template => 'template',
 		-format   =>  $format
-					     );
+											);
 
 The new() class method constructs a new Bio::Expression::MicroarrayIO
 object.  The returned object can be used to retrieve or print cluster
@@ -65,11 +65,11 @@ The format name is case insensitive.  'AFFYMETRIX', 'Affymetrix' and
 
 =item -template
 
-Affymetrix (and other microarray formats?) files require a template
-file that defines the location of probes on an array.  This template
-is (maybe) necessary to match values from a matrix of values from a 
-data file with sets of probes that are on the array.  Pass the path
-to the template file as the -template parameter.
+Affymetrix CEL, and other microarray files, require a template file
+that defines the location of probes on the array.  This template is
+necessary to match values from a matrix of values from a data file
+with sets of probes that are on the array.  Pass the path to the
+template file as the -template parameter.
 
 =back
 
@@ -162,6 +162,16 @@ sub new {
 # this is borrowed from SeqIO.
 # _initialize is chained for all SeqIO classes
 
+=head2 _initialize
+
+ Title   : _initialize
+ Usage   : $stream->_initialize(@args);
+ Function: Initialize the object's IO handles
+ Returns :
+ Args    : @_ from new()
+
+=cut
+
 sub _initialize {
     my($self, @args) = @_;
     # initialize the IO part
@@ -173,7 +183,7 @@ sub _initialize {
  Title   : next_array
  Usage   : $ary = $stream->next_array()
  Function: Reads the next array object from the stream and returns it.
- Returns : a Bio::Expression::MicroarrayI compliant object
+ Returns : a (hopefully) Bio::Expression::MicroarrayI compliant object
  Args    : none
 
 
@@ -188,11 +198,10 @@ sub next_array {
 =head2 _load_format_module
 
  Title   : _load_format_module
- Usage   : *INTERNAL MicroarrayIO stuff*
- Function: Loads up (like use) a module at run time on demand
- Example :
- Returns :
- Args    :
+ Usage   : $stream->_load_format_module($format)
+ Function: Loads a module for $format at run time
+ Returns : 1 on success, undef on failure
+ Args    : the name of a microarray format (class name)
 
 =cut
 
@@ -212,7 +221,7 @@ sub _load_format_module {
                   $load: couldn't load $format - for more details on
                   supported formats please see the MicroarrayIO docs
                   Exception $@";
-	  return;
+	  return undef;
   }
   return 1;
 }
@@ -232,6 +241,7 @@ sub _guess_format {
    my $class = shift;
    return unless $_ = shift;
    return 'affymetrix' if /\.cel$/i;
+   return 'dchipxls'   if /\.xls$/i;
 }
 
 =head2 use_tempfile

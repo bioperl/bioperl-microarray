@@ -23,6 +23,8 @@ also knows how to poke data into the matrix slots.
 
 =head1 FEEDBACK
 
+Direct feedback to E<lt>allenday@ucla.eduE<gt> or to the Bioperl mailing list (see below).
+
 =head2 Mailing Lists
 
 User feedback is an integral part of the evolution of this and other
@@ -123,10 +125,11 @@ sub load_data {
 																	   y => $row[1]
 																	  );
 	  $feature->is_singleton(1);
-	  $self->array->matrix($row[0],$row[1],\$feature);
 	  $feature->value($row[2]);
 	  $feature->standard_deviation($row[3]);
 	  $feature->sample_count($row[4]);
+
+	  $self->array->matrix($row[0],$row[1],\$feature);
 	}
   }
   elsif($self->mode eq 'MASKS'){
