@@ -23,7 +23,7 @@ BEGIN {
     } else {
       $OK = 1;
       use Test;    
-      plan tests => 9;
+      plan tests => 39;
     }
 }
 
@@ -50,6 +50,30 @@ my $affx = Bio::Expression::MicroarrayIO->new(
 ok 6;
 my $array = $affx->next_array;
 ok 7;
+
+my $featuregroup = undef;
+my $i = 0;
+foreach my $f ($array->each_featuregroup){
+  ok($f->id);
+  $featuregroup = $f;
+  $i++;
+  last if $i == 10;
+}
+
+$i = 0;
+foreach my $f ($array->each_qcfeaturegroup){
+  ok($f->id);
+  $i++;
+  last if $i == 10;
+}
+
+$i = 0;
+foreach my $f ($featuregroup->each_feature){
+  ok(defined($f->value));
+  $i++;
+  last if $i == 10;
+}
+
 
 my $out = Bio::Expression::MicroarrayIO->new(-file => '>./eg/3.CEL', -format => 'affymetrix', -verbose => 0);
 ok 8;

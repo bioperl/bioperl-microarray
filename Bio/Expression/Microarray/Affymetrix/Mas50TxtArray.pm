@@ -259,7 +259,7 @@ sub load_data {
 		  $featuregroup->detection(@entries[6]);
 		}
 		if (0 < length(@entries[7])) {
-		  $featuregroup->detection_pvalue(@entries[7]);
+		  $featuregroup->detection_p_value(@entries[7]);
 		}
 		if (0 < length(@entries[8])) {
 		  $featuregroup->stat_common_pairs(@entries[8]);
@@ -277,7 +277,7 @@ sub load_data {
 		  $featuregroup->change(@entries[12]);
 		}
 		if (0 < length(@entries[13])) {
-		  $featuregroup->change_pvalue(@entries[13]);
+		  $featuregroup->change_p_value(@entries[13]);
 		}
 		if (0 < length(@entries[14])) {
 		  $featuregroup->positive(@entries[14]);
@@ -385,7 +385,7 @@ sub load_data {
 		  $featuregroup->detection(@entries[4]);
 		}
 		if (0 < length(@entries[5])) {
-		  $featuregroup->detection_pvalue(@entries[5]);
+		  $featuregroup->detection_p_value(@entries[5]);
 		}
 		if (0 < length(@entries[6])) {
 		  $featuregroup->stat_common_pairs(@entries[6]);
@@ -403,7 +403,7 @@ sub load_data {
 		  $featuregroup->change(@entries[10]);
 		}
 		if (0 < length(@entries[11])) {
-		  $featuregroup->change_pvalue(@entries[11]);
+		  $featuregroup->change_p_value(@entries[11]);
 		}
 		if (0 < length(@entries[12])) {
 		  $featuregroup->positive(@entries[12]);
