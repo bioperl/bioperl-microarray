@@ -58,6 +58,8 @@ use Class::MakeMethods::Template::Flyweight
 				atom index codon_index codon regiontype region
 				length value standard_deviation sample_count
                                 display_id
+
+                                x y is_match is_masked is_outlier is_modified
 			   )
 			],
   new => 'new',

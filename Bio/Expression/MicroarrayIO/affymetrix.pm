@@ -196,7 +196,7 @@ sub load_array {
   $self->templatefile($arg) if defined $arg;
 
   my $array = Bio::Expression::Microarray::Affymetrix::Array->new(
-																  -file => $self->templatefile,
+				  -file => $self->templatefile,
 																 );
   $self->array($array);
   return $self->array;

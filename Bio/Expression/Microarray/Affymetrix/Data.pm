@@ -12,9 +12,14 @@ Bio::Expression::Microarray::Affymetrix::Data - Affymetrix CEL file.
 
 =head1 SYNOPSIS
 
+You shouldn't be using this module directly.  Try
+Bio::Expression::MicroarrayIO instead.
 
 =head1 DESCRIPTION
 
+Bio::Expression::Microarray::Affymetrix::Data just holds a reference to
+a big matrix of values corresponding to the spots on an Affy array.  It
+also knows how to poke data into the matrix slots.
 
 =head1 FEEDBACK
 
@@ -171,25 +176,6 @@ sub load_data {
 	  $feature->is_modified(1) and next;
 	}
   }
-}
-
-=head2 use_tempfile
-
- Title   : use_tempfile
- Usage   : $obj->use_tempfile($newval)
- Function: Get/Set boolean flag on whether or not use a tempfile
- Example : 
- Returns : value of use_tempfile
- Args    : newvalue (optional)
-
-=cut
-
-sub use_tempfile{
-  my ($self,$value) = @_;
-  if( defined $value) {
-	$self->{'_use_tempfile'} = $value;
-  }
-  return $self->{'_use_tempfile'};
 }
 
 1;

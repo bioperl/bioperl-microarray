@@ -15,6 +15,9 @@ features
 
 =head1 DESCRIPTION
 
+Bio::Expression::Microarray::FeatureI is an extension of
+Bio::Expression::FeatureI, with methods specific to microarray features.
+
 =head1 FEEDBACK
 
 =head2 Mailing Lists
@@ -52,13 +55,6 @@ package Bio::Expression::Microarray::FeatureI;
 use strict;
 use base qw(Bio::Expression::FeatureI Bio::Root::Root);
 use vars qw($DEBUG);
-
-use Class::MakeMethods::Template::Flyweight
-  scalar => [qw(x y is_match is_masked is_outlier is_modified
-			   )
-			],
-  new => 'new',
-;
 
 =head2 get/set methods
 
@@ -99,8 +95,13 @@ purpose, are available:
                           quantitation.  0 or undef if the value has not
                           been modified after quantitation.
 
-
 =cut
 
+sub x           { shift->throw_not_implemented }
+sub y           { shift->throw_not_implemented }
+sub is_match    { shift->throw_not_implemented }
+sub is_masked   { shift->throw_not_implemented }
+sub is_outlier  { shift->throw_not_implemented }
+sub is_modified { shift->throw_not_implemented }
 
 1;

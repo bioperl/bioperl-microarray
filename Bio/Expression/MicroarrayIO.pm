@@ -20,13 +20,13 @@ Bio::Expression::MicroarrayIO - Handler for Microarray Formats
   use Bio::Expression::MicroarrayIO;
 
   $stream  = Bio::Expression::MicroarrayIO->new(
-									  '-file'     => "my.cel",
-									  '-template' => "my.cdf",
-									  '-format'   => "affymetrix",
-											   );
+		'-file'     => "my.cel",
+		'-template' => "my.cdf",
+		'-format'   => "affymetrix",
+						);
 
   while ( my $in = $stream->next_array() ) {
-	print $in->id() . "\n";
+    print $in->id() . "\n";
   }
 
 =head1 DESCRIPTION
@@ -38,10 +38,11 @@ data formats such as Affymetrix CEL and CDF.
 
 =head2 Bio::Expression::MicroarrayIO-E<gt>new()
 
-   $str = Bio::Expression::MicroarrayIO->new(-file     => 'filename',
-											 -template => 'template',
-											 -format   => $format
-											);
+   $str = Bio::Expression::MicroarrayIO->new(
+		-file     => 'filename',
+		-template => 'template',
+		-format   =>  $format
+					     );
 
 The new() class method constructs a new Bio::Expression::MicroarrayIO
 object.  The returned object can be used to retrieve or print cluster
@@ -66,9 +67,9 @@ The format name is case insensitive.  'AFFYMETRIX', 'Affymetrix' and
 
 Affymetrix (and other microarray formats?) files require a template
 file that defines the location of probes on an array.  This template
-is necessary to match values from a matrix of values from a data file
-with sets of probes that are on the array.  Pass the path to the
-template file as the -template parameter.
+is (maybe) necessary to match values from a matrix of values from a 
+data file with sets of probes that are on the array.  Pass the path
+to the template file as the -template parameter.
 
 =back
 
@@ -125,9 +126,10 @@ use base qw(Bio::Root::Root Bio::Root::IO);
 =head2 new
 
  Title   : new
- Usage   : Bio::Expression::MicroarrayIO->new(-file     => 'path/to/filename',
-											  -format   => 'format',
-											  -template => 'path/to/template')
+ Usage   : Bio::Expression::MicroarrayIO->new(
+		-file     => 'path/to/filename',
+		-format   => 'format',
+		-template => 'path/to/template');
  Function: Returns a new microarray stream
  Returns : A Bio::Expression::MicroarrayIO handler.
  Args    : -file     => filename
@@ -157,7 +159,6 @@ sub new {
     }
 }
 
-
 # this is borrowed from SeqIO.
 # _initialize is chained for all SeqIO classes
 
@@ -182,8 +183,6 @@ sub next_array {
    my ($self, $seq) = @_;
    $self->throw("Sorry, you cannot read from a generic Bio::Expression::MicroarrayIO object.");
 }
-
-
 
 # this is borrowed from ClusterIO
 =head2 _load_format_module
@@ -258,7 +257,5 @@ sub DESTROY {
     my $self = shift;
     $self->close();
 }
-
-
 
 1;
