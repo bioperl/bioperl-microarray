@@ -203,7 +203,7 @@ sub load_data {
 						 x        =>	$attrs[UNIT_X],
 						 id       =>	$attrs[UNIT_QUAL],
 						 y	    =>	$attrs[UNIT_Y],
-						 is_match =>  $attrs[UNIT_CBASE] eq $attrs[UNIT_PBASE] ? 1 : 0,
+						 is_match =>  $attrs[UNIT_CBASE] eq $attrs[UNIT_PBASE] ? 0 : 1,
 						);
 
 	if($self->heavy){

@@ -242,6 +242,7 @@ sub _guess_format {
    return unless $_ = shift;
    return 'affymetrix' if /\.cel$/i;
    return 'dchipxls'   if /\.xls$/i;
+   return 'mas50txt'   if /\.txt$/i;
 }
 
 =head2 use_tempfile
