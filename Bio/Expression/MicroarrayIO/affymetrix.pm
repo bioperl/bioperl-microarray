@@ -1,14 +1,16 @@
 # $Id$
 # BioPerl module for Bio::Expression::MicroarrayIO::affymetrix
 #
-# Copyright Allen Day <allenday@ucla.edu>, Stan Nelson <snelson@ucla.edu>
-# Human Genetics, UCLA Medical School, University of California, Los Angeles
+# Copyright Allen Day <allenday@ucla.edu>, Stanley Nelson
+# <snelson@ucla.edu>.  Human Genetics, UCLA Medical School,
+# University of California, Los Angeles
 
 # POD documentation - main docs before the code
 
 =head1 NAME
 
-Bio::Expression::MicroarrayIO::affymetrix - Work with an Affymetrix array.
+Bio::Expression::MicroarrayIO::affymetrix - Work with an Affymetrix
+array.
 
 =head1 SYNOPSIS
 
@@ -60,6 +62,20 @@ use vars qw($DEBUG);
 
 use constant CRLF => "\015\012";
 
+=head2 new
+
+ Title   : new
+ Usage   : Bio::Expression::MicroarrayIO::affymetrix->new(
+											  -file     => 'path/to/filename',
+											  -template => 'path/to/template')
+ Comments: You should probably not be instantiating this module directly.
+           Use MicroarrayIO instead.
+ Args    : -file     => filename
+           -format   => format
+           -template => template
+
+=cut
+
 sub new {
     my ($caller,@args) = @_;
     my $class = ref($caller) || $caller;
@@ -69,6 +85,22 @@ sub new {
     $self->_initialize(@args);
     return $self;
 }
+
+=head2 _initialize
+
+ Title   : new
+ Usage   : $affy->_initialize(
+							  -file     => 'path/to/filename',
+							  -template => 'path/to/template'
+							 );
+ Function: Loads up a template module that will be used to
+           by next_array();
+ Returns : nothing.
+ Args    : -file     => filename
+           -format   => format
+           -template => template
+
+=cut
 
 sub _initialize{
   my ($self,@args) = @_;
@@ -87,11 +119,52 @@ sub _initialize{
   $self->load_template();
 }
 
+=head2 templatefile
+
+ Title   : templatefile
+ Usage   : $affy->templatefile('path/to/template');
+           $affy->templatefile();
+ Function: get/set the the location of a template file
+ Returns : path to a template file
+ Args    : optional path to a template file
+
+=cut
+
 sub templatefile {
   my($self,$val) = @_;
   $self->{templatefile} = $val if $val;
   return $self->{templatefile};
 }
+
+=head2 datafile
+
+ Title   : datafile
+ Usage   : $affy->datafile('path/to/datafile');
+           $affy->datafile();
+ Function: get/set the the location of a data file
+ Returns : path to a data file
+ Args    : optional path to a data file
+
+=cut
+
+sub datafile {
+  my($self,$val) = @_;
+  $self->{datafile} = $val if $val;
+  return $self->{datafile};
+}
+
+=head2 template
+
+ Title   : template
+ Usage   : $affy->template($template);
+           $affy->template();
+ Comments: You probably should not be using this method
+           to set the template object.  Use load_template() instead.
+ Function: get/set the the template object
+ Returns : a Bio::Expression::Microarray::Affymetrix::Template object
+ Args    : optional Bio::Expression::Microarray::Affymetrix::Template object
+
+=cut
 
 sub template {
   my($self,$val) = @_;
@@ -99,14 +172,41 @@ sub template {
   return $self->{template};
 }
 
+=head2 load_template
+
+ Title   : load_template
+ Usage   : $affy->load_template($template);
+           $affy->load_template();
+ Function: cause a Bio::Expression::Microarray::Affymetrix::Template
+           object to be created using $affy->templatefile().
+ Returns : a  Bio::Expression::Microarray::Affymetrix::Template object
+ Args    : optional path to a template file, which is stored in
+           $affy->templatefile before the Template object is created.
+
+=cut
+
 sub load_template {
-  my($self,@args) = @_;
+  my($self,$arg) = @_;
+
+  $self->templatefile($arg) if defined $arg;
 
   my $template = Bio::Expression::Microarray::Affymetrix::Template->new(
 																		-file => $self->templatefile,
 																	   );
   $self->template($template);
+  return $self->template;
 }
+
+=head2 next_array
+
+ Title   : next_array
+ Usage   : $affy->next_array();
+ Function: reads an Affymetrix data record from $affy->datafile
+ Returns : a  Bio::Expression::Microarray::Affymetrix::Template object
+           that has been filled with probe values.
+ Args    :
+
+=cut
 
 sub next_array {
   my $self = shift;
@@ -123,7 +223,7 @@ sub next_array {
 	  if($start == 0){
 		$array = new Bio::Expression::Microarray::Affymetrix::Data;
 		$array->template($self->template);
-#		return $self->template;
+		#return $self->template;
 	  }
 	  $start = 0;
 	}
@@ -136,6 +236,16 @@ sub next_array {
   #for the last (or only) file in the input stream
   return $self->template;
 }
+
+=head2 write_array
+
+ Title   : write_array
+ Usage   : $affy->write_array($array);
+ Function: write an Affymetrix data record using $array
+ Returns : nothing.  prints a lot of text.
+ Args    : A Bio::Expression::MicroarrayI compliant object.
+
+=cut
 
 sub write_array {
   my($self,$array) = @_;
@@ -152,9 +262,9 @@ sub write_array {
 	$self->warn(" $array is not MicroarrayI compliant. Dump may fail!");
   }
 
-  print "[CEL]"       . CRLF . $array->cel       . CRLF;
-  print "[HEADER]"    . CRLF . $array->header    . CRLF;
-  print "[INTENSITY]" . CRLF . $array->intensity;
+  $self->_print "[CEL]"       . CRLF . $array->cel       . CRLF;
+  $self->_print "[HEADER]"    . CRLF . $array->header    . CRLF;
+  $self->_print "[INTENSITY]" . CRLF . $array->intensity;
 
   my $i = 0;
   foreach my $x ( @{ $array->matrix } ){
@@ -163,13 +273,13 @@ sub write_array {
 	foreach my $y ( @$x ){
 	  next unless $y;
 	  #$y is a probe object
-	  print join "\t", (sprintf("%3d",$j),
+	  $self->_print join "\t", (sprintf("%3d",$j),
 						sprintf("%3d",$i),
 						$$y->value,
 						$$y->standard_deviation,
 						sprintf("%3d",$$y->samples),
 					   );
-	  print CRLF;
+	  $self->_print CRLF;
 
 	  push @outliers, [$j,$i] if $$y->is_outlier;
 	  push @modified, [$j,$i] if $$y->is_modified;
@@ -180,37 +290,24 @@ sub write_array {
 	$i++;
   }
 
-  print CRLF;
+  $self->_print CRLF;
 
-  print "[MASKS]" . CRLF . $array->masks;
+  $self->_print "[MASKS]" . CRLF . $array->masks;
   foreach my $mask (@masks){
-	print $mask->[0], "\t", $mask->[1], CRLF;
+	$self->_print $mask->[0], "\t", $mask->[1], CRLF;
   }
-  print CRLF;
+  $self->_print CRLF;
 
-  print "[OUTLIERS]" . CRLF . $array->outliers;
+  $self->_print "[OUTLIERS]" . CRLF . $array->outliers;
   foreach my $outlier (@outliers){
-	print $outlier->[0], "\t", $outlier->[1], CRLF;
+	$self->_print $outlier->[0], "\t", $outlier->[1], CRLF;
   }
-  print CRLF;
+  $self->_print CRLF;
 
-  print "[MODIFIED]" . CRLF . $array->modified;
+  $self->_print "[MODIFIED]" . CRLF . $array->modified;
   foreach my $modified (@modified){
-	print $modified->[0], "\t", $modified->[1], CRLF;
+	$self->_print $modified->[0], "\t", $modified->[1], CRLF;
   }
-  #print CRLF;
-}
-
-sub datafile {
-  my($self,$val) = @_;
-  $self->{datafile} = $val if $val;
-  return $self->{datafile};
-}
-
-sub array {
-  my($self,$val) = @_;
-  $self->{array} = $val if $val;
-  return $self->{array};
 }
 
 1;

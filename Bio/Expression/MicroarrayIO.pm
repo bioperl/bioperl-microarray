@@ -5,9 +5,11 @@
 # Cared for by Allen Day <allenday@ucla.edu>
 #
 # Copyright Allen Day, Stanley Nelson
-# Human Genetics, UCLA Medical School, University of California, Los Angeles
+# Human Genetics, UCLA Medical School, University of California,
+# Los Angeles
 #
-# You may distribute this module under the same terms as perl itself
+# You may distribute this module under the same terms as perl
+# itself
 
 =head1 NAME
 
@@ -17,9 +19,10 @@ Bio::Expression::MicroarrayIO - Handler for Microarray Formats
 
   use Bio::Expression::MicroarrayIO;
 
-  $stream  = Bio::Expression::MicroarrayIO->new('-file'     => "my.cel",
-												'-template' => "my.cdf",
-												'-format'   => "affymetrix",
+  $stream  = Bio::Expression::MicroarrayIO->new(
+									  '-file'     => "my.cel",
+									  '-template' => "my.cdf",
+									  '-format'   => "affymetrix",
 											   );
 
   while ( my $in = $stream->next_array() ) {
@@ -28,15 +31,17 @@ Bio::Expression::MicroarrayIO - Handler for Microarray Formats
 
 =head1 DESCRIPTION
 
-The Expression::MicroarrayIO module reads various Microarray data formats
-such as Affymetrix Cel files.
+The Bio::Expression::MicroarrayIO module reads various Microarray
+data formats such as Affymetrix CEL and CDF.
 
 =head1 CONSTRUCTORS
 
 =head2 Bio::Expression::MicroarrayIO-E<gt>new()
 
-   $str = Bio::Expression::MicroarrayIO->new(-file => 'filename',
-											 -format=>$format);
+   $str = Bio::Expression::MicroarrayIO->new(-file     => 'filename',
+											 -template => 'template',
+											 -format   => $format
+											);
 
 The new() class method constructs a new Bio::Expression::MicroarrayIO
 object.  The returned object can be used to retrieve or print cluster
@@ -52,18 +57,18 @@ A file path to be opened for reading.
 
 Specify the format of the file.  Supported formats include:
 
-   unigene		*.data	UniGene build files.
-   dbsnp		*.xml	dbSNP XML files
+   affymetrix		*.cel	Affymetrix CEL files
 
 The format name is case insensitive.  'AFFYMETRIX', 'Affymetrix' and
 'affymetrix' are all supported.
 
 =item -template
 
-Affymetrix (and other microarray format?) files require a Chip Definition
-File (CDF) to match values from a matrix of data from a CEL file with
-sets of probes that were synthesized on the GeneChip.  Pass the path to the
-CDF file as the -template parameter.
+Affymetrix (and other microarray formats?) files require a template
+file that defines the location of probes on an array.  This template
+is necessary to match values from a matrix of values from a data file
+with sets of probes that are on the array.  Pass the path to the
+template file as the -template parameter.
 
 =back
 
@@ -79,10 +84,9 @@ Fetch the next array from the stream.
 
 =head2 Mailing Lists
 
-User feedback is an integral part of the evolution of this
-and other Bioperl modules. Send your comments and suggestions preferably
- to one of the Bioperl mailing lists.
-Your participation is much appreciated.
+User feedback is an integral part of the evolution of this and other
+Bioperl modules. Send your comments and suggestions preferably to one
+of the Bioperl mailing lists. Your participation is much appreciated.
 
   bioperl-l@bioperl.org                  - General discussion
   http://bioperl.org/MailList.shtml      - About the mailing lists
@@ -107,18 +111,16 @@ methods. Internal methods are usually preceded with a _
 
 =cut
 
-#'
 # Let the code begin...
 
 package Bio::Expression::MicroarrayIO;
 
 use strict;
-use vars qw(@ISA);
 
 use Bio::Root::Root;
 use Bio::Root::IO;
 
-@ISA = qw(Bio::Root::Root Bio::Root::IO);
+use base qw(Bio::Root::Root Bio::Root::IO);
 
 =head2 new
 
@@ -126,8 +128,8 @@ use Bio::Root::IO;
  Usage   : Bio::Expression::MicroarrayIO->new(-file     => 'path/to/filename',
 											  -format   => 'format',
 											  -template => 'path/to/template')
- Function: Returns a new cluster stream
- Returns : A Bio::Expression::MicroarrayIO::Handler initialised with the appropriate format
+ Function: Returns a new microarray stream
+ Returns : A Bio::Expression::MicroarrayIO handler.
  Args    : -file     => filename
            -format   => format
            -template => template
@@ -156,6 +158,7 @@ sub new {
 }
 
 
+# this is borrowed from SeqIO.
 # _initialize is chained for all SeqIO classes
 
 sub _initialize {
@@ -167,7 +170,7 @@ sub _initialize {
 =head2 next_array
 
  Title   : next_array
- Usage   : $cluster = $stream->next_array()
+ Usage   : $ary = $stream->next_array()
  Function: Reads the next array object from the stream and returns it.
  Returns : a Bio::Expression::MicroarrayI compliant object
  Args    : none
@@ -182,6 +185,7 @@ sub next_array {
 
 
 
+# this is borrowed from ClusterIO
 =head2 _load_format_module
 
  Title   : _load_format_module
@@ -207,7 +211,7 @@ sub _load_format_module {
   if ( $@ ) {
     print STDERR "
                   $load: couldn't load $format - for more details on
-                  supported formats please see the ClusterIO docs
+                  supported formats please see the MicroarrayIO docs
                   Exception $@";
 	  return;
   }
@@ -217,7 +221,7 @@ sub _load_format_module {
 =head2 _guess_format
 
  Title   : _guess_format
- Usage   : $obj->_guess_format($filename)
+ Usage   : $stream->_guess_format($filename)
  Function: guess format based on file suffix
  Example :
  Returns : guessed format of filename (lower case)
@@ -234,9 +238,9 @@ sub _guess_format {
 =head2 use_tempfile
 
  Title   : use_tempfile
- Usage   : $obj->use_tempfile($newval)
+ Usage   : $stream->use_tempfile($newval)
  Function: Get/Set boolean flag on whether or not use a tempfile
- Example : 
+ Example :
  Returns : value of use_tempfile
  Args    : newvalue (optional)
 
