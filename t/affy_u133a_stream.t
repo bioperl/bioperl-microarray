@@ -51,12 +51,10 @@ my $affx = Bio::Expression::MicroarrayIO->new(
 						-format   => 'affymetrix',
 					   );
 ok 6;
-$affx->verbose(1);
+#$affx->verbose(1);
 ok 7;
 my $array = $affx->next_array;
 ok 8;
-
-print STDERR "\n\nwoo\n\n";
 
 my $array = $affx->next_array;
 ok 9;
