@@ -206,7 +206,7 @@ sub each_qcfeaturegroup {
 sub load_data {
   my($self,$line) = @_;
 
-  next unless $line;
+  return unless $line;
   print STDERR $self->mode . "\r" if $DEBUG;
   my($key,$value) = (undef,undef);
 
