@@ -315,13 +315,14 @@ sub destroy_features {
   my $self = shift;
   my $matrix = $self->matrix;
 
-  foreach my $x (@{$self->matrix}){
-    next unless $x;
-    foreach my $y (@{$x}){
-      next unless $y;
-      $$y->_destroy_flyweight_info;
-    }
-  }
+# class::makemethods::template::flyweight no longer implements destroy_flyweight_info ?
+#  foreach my $x (@{$self->matrix}){
+#    next unless $x;
+#    foreach my $y (@{$x}){
+#      next unless $y;
+#      $$y->_destroy_flyweight_info;
+#    }
+#  }
 }
 
 1;
