@@ -54,7 +54,7 @@ package Bio::Expression::Microarray::Affymetrix::ArrayDesign;
 
 use strict;
 use Bio::Root::Root;
-use Bio::Expression::FeatureSet;
+use Bio::Expression::FeatureGroup;
 use Bio::Expression::Microarray::Affymetrix::Feature;
 
 use base qw(Bio::Root::Root);
@@ -120,17 +120,17 @@ sub matrix {
 
  Title   : featuregroup
  Usage   : $self->featuregroup->($featurename);
- Function: get-set method for FeatureSet object
-Returns : a Bio::Expression::FeatureSet object
- Args    : A key for a FeatureSet object
+ Function: get-set method for FeatureGroup object
+Returns : a Bio::Expression::FeatureGroup object
+ Args    : A key for a FeatureGroup object
 
 =cut
 
 sub featuregroup {
   my($self,$arg) = @_;
   return $self->{featuregroup}->{$arg} if $self->{featuregroup}->{$arg};
-  $self->{featuregroup}->{$arg} = Bio::Expression::FeatureSet->new()
-	or $self->throw("Couldn't create a Bio::Expression::FeatureSet: $!");
+  $self->{featuregroup}->{$arg} = Bio::Expression::FeatureGroup->new()
+	or $self->throw("Couldn't create a Bio::Expression::FeatureGroup: $!");
   return $self->{featuregroup}->{$arg};
 }
 
@@ -138,17 +138,17 @@ sub featuregroup {
 
  Title   : qc_featuregroup
  Usage   : $self->qc_featuregroup($mode);
- Function: get-set method for quality control FeatureSet object
-Returns : a Bio::Expression::FeatureSet object
- Args    : A key for a FeatureSet object
+ Function: get-set method for quality control FeatureGroup object
+Returns : a Bio::Expression::FeatureGroup object
+ Args    : A key for a FeatureGroup object
 
 =cut
 
 sub qc_featuregroup {
   my($self,$arg) = @_;
   return $self->{qcfeaturegroup}->{$arg} if $self->{qcfeaturegroup}->{$arg};
-  $self->{qcfeaturegroup}->{$arg} = Bio::Expression::FeatureSet->new()
-	or $self->throw("Couldn't create a Bio::Expression::FeatureSet: $!");
+  $self->{qcfeaturegroup}->{$arg} = Bio::Expression::FeatureGroup->new()
+	or $self->throw("Couldn't create a Bio::Expression::FeatureGroup: $!");
 
   #tag it as being a QC featuregroup
   $self->{qcfeaturegroup}->{$arg}->is_qc(1);
@@ -160,8 +160,8 @@ sub qc_featuregroup {
 
  Title   : each_featuregroup
  Usage   : @featuregroups = $array->each_featuregroup();
- Function: gets a list of FeatureSet objects
- Returns : returns list of FeatureSet objects
+ Function: gets a list of FeatureGroup objects
+ Returns : returns list of FeatureGroup objects
  Args    : none
 
 =cut
@@ -179,8 +179,8 @@ sub each_featuregroup {
 
  Title   : each_qcfeaturegroup
  Usage   : @qcfeaturegroups = $array->each_qcfeaturegroup();
- Function: gets a list of quality control FeatureSet objects
- Returns : returns list of quality control FeatureSet objects
+ Function: gets a list of quality control FeatureGroup objects
+ Returns : returns list of quality control FeatureGroup objects
  Args    : none
 
 =cut

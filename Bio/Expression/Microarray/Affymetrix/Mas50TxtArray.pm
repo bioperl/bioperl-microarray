@@ -61,7 +61,7 @@ use lib '/home2/crsto/cvsroot/bioperl-live/';
 use strict;
 use Bio::Root::Root;
 use Bio::Root::IO;
-use Bio::Expression::FeatureSet::FeatureSetMas50;
+use Bio::Expression::FeatureGroup::FeatureGroupMas50;
 use IO::File;
 
 use base qw(Bio::Root::Root Bio::Root::IO);
@@ -88,18 +88,18 @@ use Class::MakeMethods::Emulator::MethodMaker
 =head2 featuregroup
 
  Title   : featuregroup
- Usage   : $array->featureset($name);
- Function: get-set method for FeatureSet object
-Returns : a Bio::Expression::FeatureSet object
- Args    : A key for a FeatureSet object
+ Usage   : $array->featuregroup($name);
+ Function: get-set method for FeatureGroup object
+Returns : a Bio::Expression::FeatureGroup object
+ Args    : A key for a FeatureGroup object
 
 =cut
 
 sub featuregroup {
   my($self,$arg) = @_;
   return $self->{featuregroup}->{$arg} if $self->{featuregroup}->{$arg};
-  $self->{featuregroup}->{$arg} = Bio::Expression::FeatureSet::FeatureSetMas50->new()
-	or $self->throw("Couldn't create a Bio::Expression::FeatureSet::FeatureSetMas50 $!");
+  $self->{featuregroup}->{$arg} = Bio::Expression::FeatureGroup::FeatureGroupMas50->new()
+	or $self->throw("Couldn't create a Bio::Expression::FeatureGroup::FeatureGroupMas50 $!");
   return $self->{featuregroup}->{$arg};
 }
 
@@ -107,8 +107,8 @@ sub featuregroup {
 
  Title   : each_featuregroup
  Usage   : @featuregroups = $array->each_featuregroup();
- Function: iterated through FeatureSet objects
-Returns : a list of Bio::Expression::FeatureSet::FeatureSetMas50 object
+ Function: iterated through FeatureGroup objects
+Returns : a list of Bio::Expression::FeatureGroup::FeatureGroupMas50 object
  Args    : none
 
 =cut
